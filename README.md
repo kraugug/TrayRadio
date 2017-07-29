@@ -3,4 +3,4 @@ Simple internet radio player for Windows inspired by Linux [RadioTray](http://ra
 
 Webpage: [https://trayradio.000webhostapp.com](https://trayradio.000webhostapp.com)
 
-Using: [BASS audio library (http://www.un4seen.com/)](http://www.un4seen.com/)
+Using: [BASS audio library (http://www.un4seen.com/)](http://www.un4seen.com/) (Non commercial purpose only)
