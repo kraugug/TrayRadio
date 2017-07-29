@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TrayRadio.App">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAUgAAQAAAAEAQAQAACAgAIQAIQAQAQQAQAAQAAAAg=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.RadioEntry">
+    <Position X="3.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EAACICAEAAAAABAAGAgCAAQACAAAEACA6AIQAECAACA=</HashCode>
+      <FileName>RadioEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.ShoutcastMetadata">
+    <Position X="5.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAEAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ShoutcastMetadata.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.Updater.Updater">
+    <Position X="7.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAEAgAAQAAAAACAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Updater\Updater.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.Updater.UpdateInfo">
+    <Position X="7.5" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>IgAAAAAAAAAIAAhAAAAAAAQAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Updater\UpdateInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.BalanceVolumeWindow">
+    <Position X="12.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAIAAAAAACAAAAARAAAAAEAIRAAAAAAQAAAEE=</HashCode>
+      <FileName>BalanceVolumeWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TrayRadio.PreferencesWindow">
+    <Position X="9.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>gIRAQQAhIAAAAARAEAAQATgAAAIBBBVYAAAIABCAAJA=</HashCode>
+      <FileName>PreferencesWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TrayRadio.RadioCollection">
+    <Position X="5.5" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RadioCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.IntRangeValidationRule">
+    <Position X="5.5" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EgAAAAAAAACAAAAAAAAAAAAAAAAIAAAAEAAAIAAAAAA=</HashCode>
+      <FileName>IntRangeValidationRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrayRadio.Extensions">
+    <Position X="12.5" Y="4.75" Width="2.5" />
+    <NestedTypes>
+      <Enum Name="TrayRadio.Extensions.WindowButtons" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Extensions.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAACAABBAAAAAGIAAAAAAIQAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Extensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

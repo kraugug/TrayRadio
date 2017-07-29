@@ -1,0 +1,41 @@
+Tray Radio - Simple Internet Radio Player
+
+Version: 1.5.1
+Author: Michal Heczko
+Contact: micky.heczko@gmail.com
+
+Changes:
+
+[28.07.2017 -> 1.5.1]
+  - Moved to https://trayradio.000webhostapp.com/
+  - Added license file.
+
+[20.07.2017 -> 1.5.0]
+  - Added system for informing you about a new update.
+
+[18.07.2017 -> 1.4.1]
+  - Fixed bug in adding song name into songs history.
+  - Small changes in about window.
+
+[18.07.2017 -> 1.4.0]
+  - Added support for showing stream tags if stream contains them.
+  - Added temporary songs history. Available only when application is running (not saved).
+  - Added posibility to export/import radio list.
+  - Added autoplay selected radio choice.
+  - Added autostart choice.
+  - Added about window.
+  - Fixed bug when mute is activated and volume slider realy sets the volume.
+
+[17.07.2017 -> 1.3.0]
+  - Balance and volume sliders moves immediately to the location of the mouse click.
+  - Added mute control.
+
+[17.07.2017 -> 1.2.0]
+  - Radio list changes reflect immediately in context menu after Preferences window is closed.
+
+[17.07.2017 -> 1.1.0]
+  - Completely rewritten code. I was bit drunk when I wrote the previous version :).
+  - Added volume and balance control.
+
+[16.07.2017 -> 1.0.0]
+  - Initial version.
