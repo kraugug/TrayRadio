@@ -49,7 +49,8 @@ Name: "src"; Description: "Source Codes";
 
 [Files]
 ; Source Codes
-Source: "{#SourcePath}\*"; DestDir: "{app}\Sources"; Components: "src"; Flags: recursesubdirs; Excludes: "ConsoleRadio\bin\*,ConsoleRadio\Help\*,TrayRadio\bin\*,TrayRadio\Help\*,TrayRadio\TrayRadio\bin\*,ConsoleRadio\obj\*,TrayRadio\obj\*,packages\*,*.exe";
+Source: "{#SourcePath}\TrayRadio\*"; DestDir: "{app}\Sources\TrayRadio"; Components: "src"; Flags: recursesubdirs; Excludes: "bin\*,Help\*,obj\*,packages\*,*.exe";
+Source: "{#SourcePath}\www\*"; DestDir: "{app}\Sources\www"; Components: "src"; Flags: recursesubdirs;
 Source: "{#SourcePath}\TrayRadio\Changelog.txt"; DestDir: "{app}";
 Source: "{#SourcePath}\License"; DestDir: "{app}"; DestName: "License.txt";
 ; Binaries
