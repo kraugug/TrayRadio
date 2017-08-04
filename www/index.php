@@ -55,7 +55,7 @@
                 </tr>
             </table>
         </div>
-        <div style="margin-bottom: 30px;">Changelog and download of the previous versions is in progress.</div>
+        <div style="margin-top: 20px; margin-bottom: 30px;">Changelog and download of the previous versions is in progress.</div>
         <div class="cp">Copyright (c) 2017 Michal Heczko</div>
         <div class="cp">Michal Heczko &lt<a href="mailto:micky.heczko@gmail.com">micky.heczko@gmail.com</a>&gt</div>
     </body>
