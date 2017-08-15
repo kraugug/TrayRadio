@@ -2,6 +2,14 @@
 	$xml = simplexml_load_file("trayradio.xml");
     if (isset($_GET["get"]))
     {
+        $requests = fopen("requests.log", "a");
+        if ($requests)
+        {
+            $dt = new DateTime("now", new DateTimeZone("Europe/London"));
+            $timestamp = $dt->format("[Y-m-d H:i:s (P)]: ") . $_SERVER["REMOTE_ADDR"] . "\n";
+            fwrite($requests, $timestamp);
+            fclose($requests);
+        }
         header("location: " . $xml->UpdateLink);
     }
 ?>
