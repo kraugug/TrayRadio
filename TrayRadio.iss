@@ -9,7 +9,7 @@
 #define AppName "Tray Radio"
 #define AppVersion "1.5.1"
 #define AppPublisher "Michal Heczko"
-#define AppURL "http://donmiguel.hol.es/TrayRadio/"
+#define AppURL "https://trayradio.000webhostapp.com/"
 #define AppExeName "TrayRadio.exe"
 
 #define Path32Binary SourcePath + "\TrayRadio\bin\x86\Release\"
