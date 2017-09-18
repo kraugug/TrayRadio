@@ -45,7 +45,7 @@
         <h1><?php echo($xml->Name . " " . $xml->Version) ?></h1>
 	    <div style="margin-bottom: 20px;">Relesed <?php echo($xml->ReleaseDate) ?></div>
         <div style="margin-bottom: 10px;"><a href="?get">Download</a></div>
-        <div style="margin-bottom: 20px;"><a href="https://github.com/kraugug/TrayRadio">GitHub</a></div>
+        <div style="margin-bottom: 20px;"><a href="https://github.com/kraugug/TrayRadio/">GitHub</a></div>
         <div style="margin-bottom: 20px;">Simple internet radio player for Windows inspired by Linux <a href="http://radiotray.sourceforge.net/">RadioTray</a>.</div>
         <div style="margin-bottom: 20px;">Using: <a href="http://www.un4seen.com/">BASS audio library</a></div>
         <div style="margin: 0 auto; margin-top: 20px; margin-bottom: 20px; display: inline-block;">
