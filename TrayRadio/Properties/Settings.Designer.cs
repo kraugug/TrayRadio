@@ -156,7 +156,7 @@ namespace TrayRadio.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://trayradio.000webhostapp.com/trayradio.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://trayradio.kraugug.net/trayradio.xml")]
         public string UpdateLink {
             get {
                 return ((string)(this["UpdateLink"]));

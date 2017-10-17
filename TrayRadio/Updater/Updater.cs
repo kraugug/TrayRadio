@@ -53,10 +53,17 @@ namespace TrayRadio.Updater
 		public bool CheckForUpdate()
 		{
 			var webRequest = WebRequest.Create(TrayRadio.Properties.Settings.Default.UpdateLink);
-			using (var response = webRequest.GetResponse())
-			using (var content = response.GetResponseStream())
-			using (var reader = new StreamReader(content))
-				UpdateInfo = (UpdateInfo)(new XmlSerializer(typeof(UpdateInfo))).Deserialize(reader);
+			try
+			{
+				using (var response = webRequest.GetResponse())
+				using (var content = response.GetResponseStream())
+				using (var reader = new StreamReader(content))
+					UpdateInfo = (UpdateInfo)(new XmlSerializer(typeof(UpdateInfo))).Deserialize(reader);
+			}
+			catch
+			{
+				App.Instance.ShowBallonTip("Can not contact update server.", System.Windows.Forms.ToolTipIcon.Warning);
+			}
 			return (UpdateInfo != null) && (UpdateInfo.Version.CompareVersion(AboutWindow.Version) > 0);
 		}
 

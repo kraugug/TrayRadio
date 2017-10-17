@@ -1,9 +1,11 @@
 <UpdateInfo>
 	<Name>Tray Radio</Name>
-	<Version>1.5.1</Version>
-	<ReleaseDate>28.07.2017</ReleaseDate>
-	<UpdateLink>https://trayradio.000webhostapp.com/Tray Radio 1.5.1.exe</UpdateLink>
+	<Version>1.5.2</Version>
+	<ReleaseDate>17.10.2017</ReleaseDate>
+	<UpdateLink>http://trayradio.kraugug.net/Tray%20Radio%201.5.2.exe</UpdateLink>
 	<Changes>
-		- Added license file.
+		- Moved to http://trayradio.kraugug.net
+		- Changed update site in configuration.
+		- Fixed bug in updater if site is not reachable. Now application will not crash.
 	</Changes>
 </UpdateInfo>

@@ -1,10 +1,15 @@
 Tray Radio - Simple Internet Radio Player
 
-Version: 1.5.1
+Version: 1.5.2
 Author: Michal Heczko
 Contact: micky.heczko@gmail.com
 
 Changes:
+
+[17.10.2017 -> 1.5.2]
+  - Moved to http://trayradio.kraugug.net
+  - Changed update site in configuration.
+  - Fixed bug in updater if site is not reachable. Now application will not crash.
 
 [28.07.2017 -> 1.5.1]
   - Moved to https://trayradio.000webhostapp.com/

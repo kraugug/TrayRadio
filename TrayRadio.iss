@@ -7,7 +7,7 @@
 ;
 #define AppId "{CF837F0A-2961-4BB9-8A07-51A16D9C2D75}"
 #define AppName "Tray Radio"
-#define AppVersion "1.5.1"
+#define AppVersion "1.5.2"
 #define AppPublisher "Michal Heczko"
 #define AppURL "https://trayradio.000webhostapp.com/"
 #define AppExeName "TrayRadio.exe"

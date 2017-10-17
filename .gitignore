@@ -6,3 +6,7 @@
 /.vs
 /www/requests.log
 /TrayRadio/.vs/TrayRadio/v15
+/TrayRadio/packages
+/TrayRadio/obj
+/TrayRadio/bin
+/Tray Radio 1.5.2.exe
