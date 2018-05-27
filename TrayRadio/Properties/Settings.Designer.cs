@@ -12,7 +12,7 @@ namespace TrayRadio.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -187,6 +187,78 @@ namespace TrayRadio.Properties {
             }
             set {
                 this["EnableUpdates"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int BassPlayDevice {
+            get {
+                return ((int)(this["BassPlayDevice"]));
+            }
+            set {
+                this["BassPlayDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("44100")]
+        public int BassPlayFrequency {
+            get {
+                return ((int)(this["BassPlayFrequency"]));
+            }
+            set {
+                this["BassPlayFrequency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int BassRecordDevice {
+            get {
+                return ((int)(this["BassRecordDevice"]));
+            }
+            set {
+                this["BassRecordDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("44100")]
+        public int BassRecordFrequency {
+            get {
+                return ((int)(this["BassRecordFrequency"]));
+            }
+            set {
+                this["BassRecordFrequency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int BassRecordChannels {
+            get {
+                return ((int)(this["BassRecordChannels"]));
+            }
+            set {
+                this["BassRecordChannels"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RecordsFolder {
+            get {
+                return ((string)(this["RecordsFolder"]));
+            }
+            set {
+                this["RecordsFolder"] = value;
             }
         }
     }

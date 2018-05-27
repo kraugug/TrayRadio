@@ -9,6 +9,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using System.Timers;	// Threading;
 using System.Xml.Serialization;
 
@@ -50,21 +51,27 @@ namespace TrayRadio.Updater
 
 		#region Methods
 
-		public bool CheckForUpdate()
+		public void CheckForUpdate(object iniciator)
 		{
-			var webRequest = WebRequest.Create(TrayRadio.Properties.Settings.Default.UpdateLink);
-			try
+			Task.Factory.StartNew(() =>
 			{
-				using (var response = webRequest.GetResponse())
-				using (var content = response.GetResponseStream())
-				using (var reader = new StreamReader(content))
-					UpdateInfo = (UpdateInfo)(new XmlSerializer(typeof(UpdateInfo))).Deserialize(reader);
-			}
-			catch
-			{
-				App.Instance.ShowBallonTip("Can not contact update server.", System.Windows.Forms.ToolTipIcon.Warning);
-			}
-			return (UpdateInfo != null) && (UpdateInfo.Version.CompareVersion(AboutWindow.Version) > 0);
+				var webRequest = WebRequest.Create(TrayRadio.Properties.Settings.Default.UpdateLink);
+				try
+				{
+					using (var response = webRequest.GetResponse())
+					using (var content = response.GetResponseStream())
+					using (var reader = new StreamReader(content))
+					{
+						UpdateInfo = (UpdateInfo)(new XmlSerializer(typeof(UpdateInfo))).Deserialize(reader);
+						if ((UpdateInfo != null)/* && (UpdateInfo.Version.CompareVersion(AboutWindow.Version) >= 0)*/)
+							OnCheckForUpdate?.Invoke(iniciator, new CheckForUpdateEventArgs(UpdateInfo));
+					}
+				}
+				catch(Exception ex)
+				{
+					OnCheckForUpdateFailed?.Invoke(iniciator, new CheckForUpdateFailedEventArgs(ex));
+				}
+			});
 		}
 
 		#endregion
@@ -75,18 +82,16 @@ namespace TrayRadio.Updater
 		{
 			_timer = new Timer(TrayRadio.Properties.Settings.Default.UpdateCheckInterval);
 			_timer.AutoReset = true;
-			_timer.Elapsed += (object sender, ElapsedEventArgs e) =>
-			{
-				if (CheckForUpdate())
-					UpdateAvailable?.Invoke(this, EventArgs.Empty);
-			};
+			_timer.Elapsed += (object sender, ElapsedEventArgs e) => { CheckForUpdate(sender); };
 		}
 
 		#endregion
 
 		#region
 
-		public event EventHandler UpdateAvailable;
+		public event EventHandler<CheckForUpdateFailedEventArgs> OnCheckForUpdateFailed;
+
+		public event EventHandler<CheckForUpdateEventArgs> OnCheckForUpdate;
 
 		#endregion
 	}

@@ -1,10 +1,14 @@
 Tray Radio - Simple Internet Radio Player
 
-Version: 1.5.2
+Version: 1.6.0
 Author: Michal Heczko
 Contact: micky.heczko@gmail.com
 
 Changes:
+
+[15.02.2018 -> 1.6.0]
+  - Added posibility to record the playing radio. Initial stage, possible bugs.
+    Not all ideas were included (again bit drunk) :).
 
 [17.10.2017 -> 1.5.2]
   - Moved to http://trayradio.kraugug.net

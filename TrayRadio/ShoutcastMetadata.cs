@@ -49,7 +49,7 @@ namespace TrayRadio
 
 		public ShoutcastMetadata(string title, string url)
 		{
-			Title = title;
+			Title = title.Trim(new char[] { '@', ';', '+', ' ', '*' });
 			Url = url;
 		}
 

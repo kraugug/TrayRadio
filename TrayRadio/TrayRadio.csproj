@@ -81,6 +81,9 @@
     <Reference Include="Bass.Net, Version=2.4.12.3, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
       <HintPath>packages\Bass.NetWrapper.2.4.12.5\lib\net40\Bass.Net.dll</HintPath>
     </Reference>
+    <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -92,6 +95,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="taglib-sharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -113,13 +119,21 @@
       <DependentUpon>BalanceVolumeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="HotKeyWindow.xaml.cs">
+      <DependentUpon>HotKeyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IntRangeValidationRule.cs" />
+    <Compile Include="KeyboardHook.cs" />
+    <Compile Include="KeyPressedEventArgs.cs" />
+    <Compile Include="ObjectToFormatedStringConverter.cs" />
     <Compile Include="RadioCollection.cs" />
     <Compile Include="RadioEntry.cs" />
     <Compile Include="ShoutcastMetadata.cs" />
     <Compile Include="SongsHistoryWindow.xaml.cs">
       <DependentUpon>SongsHistoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Updater\CheckForUpdateEventArgs.cs" />
+    <Compile Include="Updater\CheckForUpdateFailedEventArgs.cs" />
     <Compile Include="Updater\UpdateInfo.cs" />
     <Compile Include="Updater\Updater.cs" />
   </ItemGroup>
@@ -160,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BalanceVolumeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HotKeyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,6 +231,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Debug_Antenna_Signal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Debug_Antenna_No_Signal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Debug_Antenna_Signal_Stalled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Antenna_Signal_Recording.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Antenna_Signal_Recording_Stalled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Debug_Antenna_Recording.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\BASS.Native.2.4.12.2\build\BASS.Native.targets" Condition="Exists('packages\BASS.Native.2.4.12.2\build\BASS.Native.targets')" />

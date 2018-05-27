@@ -19,7 +19,7 @@ namespace TrayRadio.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -83,6 +83,16 @@ namespace TrayRadio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Antenna_Signal_Recording {
+            get {
+                object obj = ResourceManager.GetObject("Antenna_Signal_Recording", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Antenna_Signal_Stalled {
             get {
                 object obj = ResourceManager.GetObject("Antenna_Signal_Stalled", resourceCulture);
@@ -96,6 +106,46 @@ namespace TrayRadio.Properties {
         internal static System.Drawing.Bitmap ClearList {
             get {
                 object obj = ResourceManager.GetObject("ClearList", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Debug_Antenna_No_Signal {
+            get {
+                object obj = ResourceManager.GetObject("Debug_Antenna_No_Signal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Debug_Antenna_Recording {
+            get {
+                object obj = ResourceManager.GetObject("Debug_Antenna_Recording", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Debug_Antenna_Signal {
+            get {
+                object obj = ResourceManager.GetObject("Debug_Antenna_Signal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Debug_Antenna_Signal_Stalled {
+            get {
+                object obj = ResourceManager.GetObject("Debug_Antenna_Signal_Stalled", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -170,6 +220,15 @@ namespace TrayRadio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to updateInfo.
+        /// </summary>
+        internal static string Param_UpdateInfo {
+            get {
+                return ResourceManager.GetString("Param_UpdateInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Plus {
@@ -186,6 +245,15 @@ namespace TrayRadio.Properties {
             get {
                 object obj = ResourceManager.GetObject("Preferences", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://trayradio.kraugug.net.
+        /// </summary>
+        internal static string String_TrayRadioURL {
+            get {
+                return ResourceManager.GetString("String_TrayRadioURL", resourceCulture);
             }
         }
         

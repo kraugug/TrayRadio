@@ -25,6 +25,7 @@ namespace TrayRadio
 
 		public static readonly DependencyProperty BalanceSliderValueProperty = DependencyProperty.Register("BalanceSliderValue", typeof(string), typeof(PreferencesWindow), new PropertyMetadata(null));
 		public static readonly RoutedCommand CommandAddRadio = new RoutedCommand();
+		public static readonly RoutedCommand CommandBrowseRecordsFolder = new RoutedCommand();
 		public static readonly RoutedCommand CommandClearRadios = new RoutedCommand();
 		public static readonly RoutedCommand CommandExportRadios = new RoutedCommand();
 		public static readonly RoutedCommand CommandImportRadios = new RoutedCommand();
@@ -82,6 +83,14 @@ namespace TrayRadio
 		{
 			while(TrayRadio.Properties.Settings.Default.Radios.Count > 0)
 				TrayRadio.Properties.Settings.Default.Radios.RemoveAt(0);
+		}
+
+		private void CommandBrowseRecordsFolder_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			System.Windows.Forms.FolderBrowserDialog dlgBrowseFolder = new System.Windows.Forms.FolderBrowserDialog();
+			dlgBrowseFolder.SelectedPath = Properties.Settings.Default.RecordsFolder;
+			if (dlgBrowseFolder.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				Properties.Settings.Default.RecordsFolder = dlgBrowseFolder.SelectedPath;
 		}
 
 		private void CommandExportRadios_CanExecute(object sender, CanExecuteRoutedEventArgs e)

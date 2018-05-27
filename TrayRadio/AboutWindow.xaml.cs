@@ -10,7 +10,9 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace TrayRadio
 {
@@ -52,9 +54,28 @@ namespace TrayRadio
 			Process.Start(LicenseFile);
 		}
 
+		private void Label_MouseEnter(object sender, MouseEventArgs e)
+		{
+			Label label = sender as Label;
+			label.FontWeight = FontWeights.SemiBold;
+			Cursor = Cursors.Hand;
+		}
+
+		private void Label_MouseLeave(object sender, MouseEventArgs e)
+		{
+			Label label = sender as Label;
+			label.FontWeight = FontWeights.Normal;
+			Cursor = Cursors.Arrow;
+		}
+
+		private void Label_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			Process.Start(Properties.Resources.String_TrayRadioURL);
+			Close();
+		}
+
 		#endregion
-
-
+		
 		#region Constructor
 
 		public AboutWindow()

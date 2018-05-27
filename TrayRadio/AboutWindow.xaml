@@ -4,9 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:TrayRadio"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:properties="clr-namespace:TrayRadio.Properties"
         Title="About Tray Radio"
-        Width="300"
-        Height="300"
         FontFamily="Calibri,Trebuchet MS"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
@@ -21,13 +20,16 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="10"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Image Grid.Row="0" Width="80" Source="/Resources/Antenna_Signal.png"/>
-		<Label Name="lblNameAndVersion" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20" FontWeight="SemiBold"/>
-		<Label Grid.Row="2" HorizontalContentAlignment="Center" Content="Tray Radio - Copyright © 2017 Michal Heczko" FontSize="10"/>
-		<Label Grid.Row="3" HorizontalContentAlignment="Center" Content="Michal Heczko  &lt;micky.heczko@gmail.com&gt;" FontSize="10"/>
-		<Button Grid.Row="5" Width="60" Command="local:AboutWindow.CommandShowLicense" Content="License"/>
+		<Label Name="lblNameAndVersion" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="22" FontWeight="SemiBold"/>
+		<Label Grid.Row="2" HorizontalContentAlignment="Center" Content="Tray Radio - Copyright © 2018 Michal Heczko" FontSize="12"/>
+		<Label Grid.Row="3" HorizontalContentAlignment="Center" Content="Michal Heczko  &lt;micky.heczko@gmail.com&gt;" FontSize="12"/>
+		<Label Grid.Row="4" HorizontalContentAlignment="Center" Content="http://trayradio.kraugug.net" FontSize="12" Foreground="Navy" MouseEnter="Label_MouseEnter"
+		       MouseLeave="Label_MouseLeave" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+		<Button Grid.Row="6" Width="60" Command="local:AboutWindow.CommandShowLicense" Content="License"/>
 	</Grid>
 </Window>

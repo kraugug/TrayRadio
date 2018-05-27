@@ -17,6 +17,7 @@
         mc:Ignorable="d">
 	<Window.CommandBindings>
 		<CommandBinding CanExecute="CommandAddRadio_CanExecute" Command="local:PreferencesWindow.CommandAddRadio" Executed="CommandAddRadio_Executed"/>
+		<CommandBinding Command="local:PreferencesWindow.CommandBrowseRecordsFolder" Executed="CommandBrowseRecordsFolder_Executed"/>
 		<CommandBinding CanExecute="CommandExportRadios_CanExecute" Command="local:PreferencesWindow.CommandClearRadios" Executed="CommandBinding_Executed"/>
 		<CommandBinding CanExecute="CommandExportRadios_CanExecute" Command="local:PreferencesWindow.CommandExportRadios" Executed="CommandExportRadios_Executed"/>
 		<CommandBinding Command="local:PreferencesWindow.CommandImportRadios" Executed="CommandImportRadios_Executed"/>
@@ -42,6 +43,7 @@
 	</Window.Resources>
 	<Grid Margin="5">
 		<TabControl>
+			<!--  General Tab  -->
 			<TabItem Header="General">
 				<Grid Margin="5">
 					<Grid.RowDefinitions>
@@ -56,27 +58,17 @@
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="2*"/>
 								</Grid.ColumnDefinitions>
-								<CheckBox Grid.Column="0" VerticalAlignment="Center" Click="CheckBox_Autoplay_Click" Content="Autoplay radio"
-								          IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}"/>
-								<ComboBox Grid.Column="1" DisplayMemberPath="Name"
-								          IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}"
-								          ItemsSource="{Binding Source={x:Static prop:Settings.Default}, Path=Radios}"
-								          SelectedValue="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadioName}"
-								          SelectedValuePath="Name"/>
+								<CheckBox Grid.Column="0" VerticalAlignment="Center" Click="CheckBox_Autoplay_Click" Content="Autoplay radio" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}"/>
+								<ComboBox Grid.Column="1" DisplayMemberPath="Name" IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}" ItemsSource="{Binding Source={x:Static prop:Settings.Default}, Path=Radios}" SelectedValue="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadioName}" SelectedValuePath="Name"/>
 							</Grid>
-							<CheckBox Margin="0,0,0,8" Content="Autostart after system boot up"
-							          IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Autostart}"/>
+							<CheckBox Margin="0,0,0,8" Content="Autostart after system boot up" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Autostart}"/>
 							<CheckBox IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}">
 								<CheckBox.Content>
 									<StackPanel Orientation="Horizontal">
 										<Label Content="Enable informing about a new updates with check interval of"/>
-										<TextBox Width="40" Height="22" HorizontalContentAlignment="Center"
-										         IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}"
-										         Style="{StaticResource TextBoxValidationStyle}">
+										<TextBox Width="40" Height="22" HorizontalContentAlignment="Center" IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}" Style="{StaticResource TextBoxValidationStyle}">
 											<TextBox.Text>
-												<Binding Path="UpdateCheckInterval"
-												         Source="{x:Static prop:Settings.Default}"
-												         UpdateSourceTrigger="PropertyChanged">
+												<Binding Path="UpdateCheckInterval" Source="{x:Static prop:Settings.Default}" UpdateSourceTrigger="PropertyChanged">
 													<Binding.ValidationRules>
 														<local:IntRangeValidationRule From="1" To="60"/>
 													</Binding.ValidationRules>
@@ -106,12 +98,9 @@
 										<RowDefinition Height="Auto"/>
 										<RowDefinition Height="*"/>
 									</Grid.RowDefinitions>
-									<Label Grid.Row="0" Grid.Column="0"
-									       Content="{Binding ElementName=sldVolume, Path=Minimum}"/>
-									<Label Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-									       Content="{Binding VolumeSliderValue}"/>
-									<Label Grid.Row="0" Grid.Column="2"
-									       Content="{Binding ElementName=sldVolume, Path=Maximum}"/>
+									<Label Grid.Row="0" Grid.Column="0" Content="{Binding ElementName=sldVolume, Path=Minimum}"/>
+									<Label Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="{Binding VolumeSliderValue}"/>
+									<Label Grid.Row="0" Grid.Column="2" Content="{Binding ElementName=sldVolume, Path=Maximum}"/>
 									<Slider Name="sldVolume" Grid.Row="1" Grid.ColumnSpan="3" IsMoveToPointEnabled="True" Maximum="100" Minimum="0"
 									        TickFrequency="1" TickPlacement="BottomRight" ValueChanged="sldVolume_ValueChanged"
 									        Value="{Binding Source={x:Static prop:Settings.Default}, Path=Volume}"/>
@@ -128,12 +117,9 @@
 										<RowDefinition Height="Auto"/>
 										<RowDefinition Height="*"/>
 									</Grid.RowDefinitions>
-									<Label Grid.Row="0" Grid.Column="0"
-									       Content="{Binding ElementName=sldBalance, Path=Minimum}"/>
-									<Label Grid.Row="0" Grid.Column="1" Margin="-5,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-									       Content="{Binding BalanceSliderValue}"/>
-									<Label Grid.Row="0" Grid.Column="2"
-									       Content="{Binding ElementName=sldBalance, Path=Maximum}"/>
+									<Label Grid.Row="0" Grid.Column="0" Content="{Binding ElementName=sldBalance, Path=Minimum}"/>
+									<Label Grid.Row="0" Grid.Column="1" Margin="-5,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="{Binding BalanceSliderValue}"/>
+									<Label Grid.Row="0" Grid.Column="2" Content="{Binding ElementName=sldBalance, Path=Maximum}"/>
 									<Slider Name="sldBalance" Grid.Row="1" Grid.ColumnSpan="3" IsMoveToPointEnabled="True" Maximum="100" Minimum="-100"
 									        MouseWheel="Slider_MouseWheel" TickFrequency="1" TickPlacement="BottomRight" ValueChanged="sldBalance_ValueChanged"
 									        Value="{Binding Source={x:Static prop:Settings.Default}, Path=Balance}"/>
@@ -143,6 +129,7 @@
 					</GroupBox>
 				</Grid>
 			</TabItem>
+			<!--  Radio List Tab  -->
 			<TabItem Header="Radio List">
 				<Grid Margin="5">
 					<Grid.ColumnDefinitions>
@@ -161,12 +148,8 @@
 						<ListView.View>
 							<GridView>
 								<GridView.Columns>
-									<GridViewColumn Width="200"
-									                DisplayMemberBinding="{Binding Name}"
-									                Header="Name"/>
-									<GridViewColumn Width="Auto"
-									                DisplayMemberBinding="{Binding Url}"
-									                Header="URL"/>
+									<GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}" Header="Name"/>
+									<GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Url}" Header="URL"/>
 								</GridView.Columns>
 							</GridView>
 						</ListView.View>
@@ -179,13 +162,11 @@
 						</Grid.ColumnDefinitions>
 						<StackPanel Grid.Column="0" Orientation="Vertical">
 							<Label Content="Name:"/>
-							<TextBox Name="txbRadioName" Grid.Column="0"
-							         Text="{Binding SelectedRadio.Name, Mode=OneWay}"/>
+							<TextBox Name="txbRadioName" Grid.Column="0" Text="{Binding SelectedRadio.Name, Mode=OneWay}"/>
 						</StackPanel>
 						<StackPanel Grid.Column="2" Orientation="Vertical">
 							<Label Content="URL:"/>
-							<TextBox Name="txbRadioUrl" Grid.Column="0"
-							         Text="{Binding SelectedRadio.Url, Mode=OneWay}"/>
+							<TextBox Name="txbRadioUrl" Grid.Column="0" Text="{Binding SelectedRadio.Url, Mode=OneWay}"/>
 						</StackPanel>
 					</Grid>
 					<Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="2,0,0,0" Padding="3,3,3,3" Background="AliceBlue"
@@ -224,6 +205,25 @@
 							</Button>
 						</Grid>
 					</Border>
+				</Grid>
+			</TabItem>
+
+			<!--  Recordings Tab  -->
+			<TabItem Header="Recordings">
+				<Grid Margin="5">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<GroupBox Header="Records Folder">
+						<Grid Margin="5">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<TextBox Grid.Column="0" Margin="0,0,5,0" Text="{Binding Source={x:Static prop:Settings.Default}, Path=RecordsFolder, UpdateSourceTrigger=PropertyChanged}"/>
+							<Button Grid.Column="1" Width="24" Command="local:PreferencesWindow.CommandBrowseRecordsFolder" Content="..."/>
+						</Grid>
+					</GroupBox>
 				</Grid>
 			</TabItem>
 		</TabControl>

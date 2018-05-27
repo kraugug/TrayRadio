@@ -44,5 +44,23 @@
     <Setting Name="EnableUpdates" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="BassPlayDevice" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="BassPlayFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">44100</Value>
+    </Setting>
+    <Setting Name="BassRecordDevice" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="BassRecordFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">44100</Value>
+    </Setting>
+    <Setting Name="BassRecordChannels" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="RecordsFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

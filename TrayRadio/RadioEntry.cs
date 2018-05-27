@@ -7,21 +7,28 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using TagLib;
 using Un4seen.Bass;
 
 namespace TrayRadio
 {
-	public class RadioEntry
+	public class RadioEntry : INotifyPropertyChanged
 	{
 		#region Fields
 
 		private bool _active;
 		private double _balance;
+		private DOWNLOADPROC _downloadProc;
 		private ShoutcastMetadata _previouseInfo;
+		private bool _isRecording;
 		private bool _mute;
 		private string _name;
+		private FileStream _recordFileStream;
 		private double _volume;
 
 		#endregion
@@ -39,6 +46,8 @@ namespace TrayRadio
 		}
 
 		internal int ChannelHandle { get; set; }
+
+		internal BASS_CHANNELINFO ChannelInfo { get; set; }
 
 		internal ShoutcastMetadata Info { get { return ShoutcastMetadata.From(Marshal.PtrToStringAnsi(Bass.BASS_ChannelGetTags(ChannelHandle, BASSTag.BASS_TAG_META))); } }
 
@@ -67,8 +76,20 @@ namespace TrayRadio
 				return true;
 			}
 		}
-		
+
+		public bool IsRecording
+		{
+			get { return _isRecording; }
+			private set
+			{
+				_isRecording = value;
+				FirePropertyChangedEvent("IsRecording");
+			}
+		}
+
 		internal MenuItem MenuItem { get; }
+
+		internal ToolStripItem MenuStripItem { get; }
 
 		internal bool Mute
 		{
@@ -86,7 +107,7 @@ namespace TrayRadio
 			set
 			{
 				_name = value;
-				MenuItem.Text = _name;
+				MenuStripItem.Text = MenuItem.Text = _name;
 			}
 		}
 
@@ -117,18 +138,70 @@ namespace TrayRadio
 
 		#region Methods
 
+		private void DownloadProc(IntPtr buffer, int length, IntPtr user)
+		{
+			if (_recordFileStream != null)
+			{
+				if ((buffer != null) && (buffer != IntPtr.Zero) && (Status == BASSActive.BASS_ACTIVE_PLAYING))
+				{
+					byte[] data = new byte[length];
+					Marshal.Copy(buffer, data, 0, length);
+					_recordFileStream.Write(data, 0, data.Length);
+				}
+			}
+		}
+
+		protected void FirePropertyChangedEvent(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
 		public void Play()
 		{
 			OnBeforePlay?.Invoke(this, EventArgs.Empty);
-			ChannelHandle = Bass.BASS_StreamCreateURL(Url, 0, BASSFlag.BASS_DEFAULT, null, IntPtr.Zero);
+			ChannelHandle = Bass.BASS_StreamCreateURL(Url, 0, BASSFlag.BASS_DEFAULT, _downloadProc, IntPtr.Zero);
 			if (ChannelHandle != 0)
 			{
 				if (!(IsActive = Bass.BASS_ChannelPlay(ChannelHandle, false)))
 					App.Instance.ShowBallonTip(string.Format("BASS_ChannelPlay: {0}", Bass.BASS_ErrorGetCode().ToString()));
+				ChannelInfo = Bass.BASS_ChannelGetInfo(ChannelHandle);
 			}
 			else
 				App.Instance.ShowBallonTip(string.Format("BASS_StreamCreateURL: {0}", Bass.BASS_ErrorGetCode().ToString()));
 			OnAfterPlay?.Invoke(this, EventArgs.Empty);
+		}
+
+		public void StartRecording()
+		{
+			string radioRecordFolder = Path.Combine(Properties.Settings.Default.RecordsFolder, App.Instance.ActiveRadio.Name);
+			if (!Directory.Exists(radioRecordFolder))
+				Directory.CreateDirectory(radioRecordFolder);
+			string fileTitle;
+			if (!string.IsNullOrEmpty(App.Instance.ActiveRadio.Info.Title))
+				fileTitle = App.Instance.ActiveRadio.Info.Title;
+			else
+				fileTitle = DateTime.Now.ToString("d/M/yyyy HH/mm/ss");
+			string fileToSave = Path.Combine(radioRecordFolder, string.Format("{0}.mp3", fileTitle));
+			foreach (char ch in System.IO.Path.GetInvalidFileNameChars())
+				if ((ch != '\\') && (ch != ':'))
+					fileToSave = fileToSave.Replace(ch, '-');
+			_recordFileStream = new FileStream(fileToSave, FileMode.CreateNew);
+			if (_recordFileStream != null)
+			{
+				IsRecording = true;
+			}
+		}
+
+		public void StopRecording()
+		{
+			if (IsRecording)
+			{
+				IsRecording = false;
+				_recordFileStream.Flush();
+				_recordFileStream.Close();
+				_recordFileStream.Dispose();
+				_recordFileStream = null;
+			}
 		}
 
 		protected void SetBalance(double balance)
@@ -152,6 +225,7 @@ namespace TrayRadio
 			{
 				Bass.BASS_StreamFree(ChannelHandle);
 				ChannelHandle = 0;
+				StopRecording();
 				IsActive = false;
 			}
 			OnAfterStop?.Invoke(this, EventArgs.Empty);
@@ -166,6 +240,9 @@ namespace TrayRadio
 			ChannelHandle = 0;
 			MenuItem = new MenuItem();
 			MenuItem.Click += (object sender, EventArgs args) => { Play(); };
+			MenuStripItem = new ToolStripMenuItem();
+			MenuStripItem.Click += (object sender, EventArgs args) => { Play(); };
+			_downloadProc = new DOWNLOADPROC(DownloadProc);
 		}
 
 		public RadioEntry(string name, string url) : this()
@@ -183,6 +260,7 @@ namespace TrayRadio
 		public event EventHandler OnAfterStop;
 		public event EventHandler OnBeforePlay;
 		public event EventHandler OnBeforeStop;
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion
 	}
