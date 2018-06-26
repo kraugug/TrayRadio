@@ -13,7 +13,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using TagLib;
 using Un4seen.Bass;
 
 namespace TrayRadio
@@ -85,7 +84,7 @@ namespace TrayRadio
 			private set
 			{
 				_isRecording = value;
-				FirePropertyChangedEvent("IsRecording");
+				FirePropertyChangedEvent(nameof(IsRecording));
 			}
 		}
 
@@ -117,7 +116,7 @@ namespace TrayRadio
 		{
 			get
 			{
-				BASSActive status = ChannelHandle != 0 ? Bass.BASS_ChannelIsActive(ChannelHandle) : BASSActive.BASS_ACTIVE_STOPPED; ;
+                BASSActive status = ChannelHandle != 0 ? Bass.BASS_ChannelIsActive(ChannelHandle) : BASSActive.BASS_ACTIVE_STOPPED;
 				IsActive = status != BASSActive.BASS_ACTIVE_STOPPED;
 				return status;
 			}
@@ -190,7 +189,7 @@ namespace TrayRadio
 			_recordFileStream = new FileStream(fileToSave, FileMode.CreateNew);
 			if (_recordFileStream != null)
 			{
-				IsRecording = true;
+                IsRecording = true;
 			}
 		}
 
