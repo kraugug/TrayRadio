@@ -8,7 +8,11 @@
 
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -27,11 +31,15 @@ namespace TrayRadio
 		public static readonly RoutedCommand CommandAddRadio = new RoutedCommand();
 		public static readonly RoutedCommand CommandBrowseRecordsFolder = new RoutedCommand();
 		public static readonly RoutedCommand CommandClearRadios = new RoutedCommand();
-		public static readonly RoutedCommand CommandExportRadios = new RoutedCommand();
+        public static readonly RoutedCommand CommandDeleteRecording = new RoutedCommand();
+        public static readonly RoutedCommand CommandExportRadios = new RoutedCommand();
 		public static readonly RoutedCommand CommandImportRadios = new RoutedCommand();
-		public static readonly RoutedCommand CommandRemoveRadio = new RoutedCommand();
+        public static readonly RoutedCommand CommandOpenRecordingInFolder = new RoutedCommand();
+        public static readonly RoutedCommand CommandPlayRecording = new RoutedCommand();
+        public static readonly RoutedCommand CommandRemoveRadio = new RoutedCommand();
 		public static readonly RoutedCommand CommandSaveRadio = new RoutedCommand();
-		public static readonly DependencyProperty SelectedRadioProperty = DependencyProperty.Register("SelectedRadio", typeof(RadioEntry), typeof(PreferencesWindow), new PropertyMetadata(null));
+        public static readonly DependencyProperty RecordingsProperty = DependencyProperty.Register("Recordings", typeof(ObservableCollection<object>), typeof(PreferencesWindow), new PropertyMetadata(null));
+        public static readonly DependencyProperty SelectedRadioProperty = DependencyProperty.Register("SelectedRadio", typeof(RadioEntry), typeof(PreferencesWindow), new PropertyMetadata(null));
 		public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(float), typeof(PreferencesWindow), new PropertyMetadata(default(float)));
 		public static readonly DependencyProperty VolumeSliderValueProperty = DependencyProperty.Register("VolumeSliderValue", typeof(string), typeof(PreferencesWindow), new PropertyMetadata(null));
 
@@ -45,7 +53,13 @@ namespace TrayRadio
 			set { SetValue(BalanceSliderValueProperty, value); }
 		}
 
-		public RadioEntry SelectedRadio
+        public ObservableCollection<object> Recordings
+        {
+            get { return (ObservableCollection<object>)GetValue(RecordingsProperty); }
+            set { SetValue(RecordingsProperty, value); }
+        }
+
+        public RadioEntry SelectedRadio
 		{
 			get { return (RadioEntry)GetValue(SelectedRadioProperty); }
 			set { SetValue(SelectedRadioProperty, value); }
@@ -79,7 +93,7 @@ namespace TrayRadio
 			TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry(txbRadioName.Text, txbRadioUrl.Text));
 		}
 
-		private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+		private void CommandClearRadios_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			while(TrayRadio.Properties.Settings.Default.Radios.Count > 0)
 				TrayRadio.Properties.Settings.Default.Radios.RemoveAt(0);
@@ -93,7 +107,14 @@ namespace TrayRadio
 				Properties.Settings.Default.RecordsFolder = dlgBrowseFolder.SelectedPath;
 		}
 
-		private void CommandExportRadios_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CommandDeleteRecording_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            File.Delete(e.Parameter as string);
+            //Recordings.Remove(Recordings.Where((dynamic i) => i.FullPath.CompareTo(e.Parameter as string) == 0));
+            RefreshRecordingsList();
+        }
+
+        private void CommandExportRadios_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = TrayRadio.Properties.Settings.Default.Radios.Count > 0;
 		}
@@ -132,7 +153,22 @@ namespace TrayRadio
 			}
 		}
 
-		private void CommandRemoveRadio_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CommandsReconding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = e.Parameter != null && File.Exists(e.Parameter as string);
+        }
+
+        private void CommandOpenRecordingInFolder_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", string.Format("/select,\"{0}\"", e.Parameter as string));
+        }
+
+        private void CommandPlayRecording_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Process.Start(e.Parameter as string);
+        }
+
+        private void CommandRemoveRadio_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = SelectedRadio != null;
 		}
@@ -178,7 +214,38 @@ namespace TrayRadio
 			}
 		}
 
-		private void sldBalance_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void lsvRecordings_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ListView listView = sender as ListView;
+            GridView gridView = listView.View as GridView;
+            int columnsCount = gridView.Columns.Count;
+            Double gridViewWidth = Double.IsNaN(listView.Width) ? listView.ActualWidth : listView.Width;
+            Visibility visibile = (Visibility)listView.GetValue(ScrollViewer.ComputedVerticalScrollBarVisibilityProperty);
+            if (visibile == Visibility.Visible)
+            {
+                gridViewWidth -= ((Double)SystemParameters.VerticalScrollBarWidth) * 1.7;
+            }
+            double firstColumnWidth = gridViewWidth;
+            for (int index = gridView.Columns.Count - 1; index > 0; index--)
+            {
+                firstColumnWidth -= gridView.Columns[index].Width;
+            }
+            gridView.Columns[0].Width = firstColumnWidth;
+        }
+
+        private void RefreshRecordingsList()
+        {
+            Recordings.Clear();
+            foreach (string folder in Directory.GetDirectories(Properties.Settings.Default.RecordsFolder))
+                foreach (string file in Directory.GetFiles(folder)/*.Where(f => Path.GetExtension(f).ToUpper().CompareTo(".MP3") == 0)*/)
+                {
+                    int index = folder.LastIndexOf('\\') + 1;
+                    string folderName = folder.Substring(index, folder.Length - index);
+                    Recordings.Add(new { FolderName = folderName, FileName = Path.GetFileName(file), FullPath = file });
+                }
+        }
+
+        private void sldBalance_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
 			Slider_MouseWheel(sldBalance, e);
 		}
@@ -215,11 +282,12 @@ namespace TrayRadio
 				}
 			}
 		}
-				
-		private void Window_Loaded(object sender, RoutedEventArgs e)
+        
+        private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			this.DisableButtons(Extensions.WindowButtons.Maximize | Extensions.WindowButtons.Minimize);
-		}
+            RefreshRecordingsList();
+        }
 
 		#endregion
 
@@ -227,12 +295,13 @@ namespace TrayRadio
 
 		public PreferencesWindow()
 		{
-			DataContext = this;
+            Recordings = new ObservableCollection<object>();
+            DataContext = this;
 			InitializeComponent();
 			BalanceSliderValue = string.Format("{0}", Math.Truncate(sldBalance.Value));
 			VolumeSliderValue = string.Format("{0}%", Math.Truncate(sldVolume.Value));
 		}
 
-		#endregion
-	}
+        #endregion
+    }
 }

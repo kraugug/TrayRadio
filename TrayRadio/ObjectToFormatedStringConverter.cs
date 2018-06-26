@@ -25,7 +25,7 @@ namespace TrayRadio
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException();
+            return value;
 		}
 		public override object ProvideValue(IServiceProvider serviceProvider)
 		{
