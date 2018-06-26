@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using TagLib;
 using Un4seen.Bass;
 
@@ -77,6 +78,7 @@ namespace TrayRadio
 			}
 		}
 
+        [XmlIgnore]
 		public bool IsRecording
 		{
 			get { return _isRecording; }
