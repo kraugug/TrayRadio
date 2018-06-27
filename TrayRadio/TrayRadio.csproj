@@ -128,6 +128,7 @@
     <Compile Include="ObjectToFormatedStringConverter.cs" />
     <Compile Include="RadioCollection.cs" />
     <Compile Include="RadioEntry.cs" />
+    <Compile Include="RecordingInfo.cs" />
     <Compile Include="ShoutcastMetadata.cs" />
     <Compile Include="SongsHistoryWindow.xaml.cs">
       <DependentUpon>SongsHistoryWindow.xaml</DependentUpon>

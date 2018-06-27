@@ -10,6 +10,7 @@
         Height="{Binding Source={x:Static prop:Settings.Default}, Path=PreferencesWindowHeight}"
         MinWidth="560"
         MinHeight="400"
+        Closed="Window_Closed"
         Icon="Resources\Preferences.png"
         Loaded="Window_Loaded"
         ResizeMode="CanResize"
@@ -231,10 +232,20 @@
                     </GroupBox>
                     <GroupBox Grid.Row="2" Padding="5" Header="Recordings">
                         <ListView Name="lsvRecordings" ItemsSource="{Binding Recordings}" SizeChanged="lsvRecordings_SizeChanged">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="FontWeight" Value="Normal"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Width="180" DisplayMemberBinding="{Binding FileName}" Header="Recording"/>
-                                    <GridViewColumn Width="206" DisplayMemberBinding="{Binding FolderName}" Header="Radio"/>
+                                    <GridViewColumn Width="206" DisplayMemberBinding="{Binding RadioName}" Header="Radio"/>
                                     <GridViewColumn Width="70">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>

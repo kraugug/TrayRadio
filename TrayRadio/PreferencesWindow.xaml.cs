@@ -38,7 +38,7 @@ namespace TrayRadio
         public static readonly RoutedCommand CommandPlayRecording = new RoutedCommand();
         public static readonly RoutedCommand CommandRemoveRadio = new RoutedCommand();
 		public static readonly RoutedCommand CommandSaveRadio = new RoutedCommand();
-        public static readonly DependencyProperty RecordingsProperty = DependencyProperty.Register("Recordings", typeof(ObservableCollection<object>), typeof(PreferencesWindow), new PropertyMetadata(null));
+        public static readonly DependencyProperty RecordingsProperty = DependencyProperty.Register("Recordings", typeof(ObservableCollection<RecordingInfo>), typeof(PreferencesWindow), new PropertyMetadata(null));
         public static readonly DependencyProperty SelectedRadioProperty = DependencyProperty.Register("SelectedRadio", typeof(RadioEntry), typeof(PreferencesWindow), new PropertyMetadata(null));
 		public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(float), typeof(PreferencesWindow), new PropertyMetadata(default(float)));
 		public static readonly DependencyProperty VolumeSliderValueProperty = DependencyProperty.Register("VolumeSliderValue", typeof(string), typeof(PreferencesWindow), new PropertyMetadata(null));
@@ -53,9 +53,11 @@ namespace TrayRadio
 			set { SetValue(BalanceSliderValueProperty, value); }
 		}
 
-        public ObservableCollection<object> Recordings
+        public static PreferencesWindow Instance { get; private set; }
+
+        public ObservableCollection<RecordingInfo> Recordings
         {
-            get { return (ObservableCollection<object>)GetValue(RecordingsProperty); }
+            get { return (ObservableCollection<RecordingInfo>)GetValue(RecordingsProperty); }
             set { SetValue(RecordingsProperty, value); }
         }
 
@@ -109,8 +111,13 @@ namespace TrayRadio
 
         private void CommandDeleteRecording_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            File.Delete(e.Parameter as string);
-            //Recordings.Remove(Recordings.Where((dynamic i) => i.FullPath.CompareTo(e.Parameter as string) == 0));
+            string fileName = e.Parameter as string;
+            if (Recordings.Where(i => i.IsActive && i.FullPath.CompareTo(fileName) == 0).Count() > 0)
+                if (MessageBox.Show("Do you want to stop and delete recording?", "Recording in progress", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    App.Instance.ActiveRadio.StopRecording();
+                else
+                    return;
+            File.Delete(fileName);
             RefreshRecordingsList();
         }
 
@@ -233,16 +240,12 @@ namespace TrayRadio
             gridView.Columns[0].Width = firstColumnWidth;
         }
 
-        private void RefreshRecordingsList()
+        internal void RefreshRecordingsList()
         {
             Recordings.Clear();
             foreach (string folder in Directory.GetDirectories(Properties.Settings.Default.RecordsFolder))
                 foreach (string file in Directory.GetFiles(folder)/*.Where(f => Path.GetExtension(f).ToUpper().CompareTo(".MP3") == 0)*/)
-                {
-                    int index = folder.LastIndexOf('\\') + 1;
-                    string folderName = folder.Substring(index, folder.Length - index);
-                    Recordings.Add(new { FolderName = folderName, FileName = Path.GetFileName(file), FullPath = file });
-                }
+                    Recordings.Add(new RecordingInfo(file) { IsActive = App.Instance.ActiveRadio != null && App.Instance.ActiveRadio.IsRecording && file.CompareTo(App.Instance.ActiveRadio.ActiveRecordingFileName) == 0 });
         }
 
         private void sldBalance_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -282,7 +285,12 @@ namespace TrayRadio
 				}
 			}
 		}
-        
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Instance = null;
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			this.DisableButtons(Extensions.WindowButtons.Maximize | Extensions.WindowButtons.Minimize);
@@ -295,11 +303,12 @@ namespace TrayRadio
 
 		public PreferencesWindow()
 		{
-            Recordings = new ObservableCollection<object>();
+            Recordings = new ObservableCollection<RecordingInfo>();
             DataContext = this;
 			InitializeComponent();
 			BalanceSliderValue = string.Format("{0}", Math.Truncate(sldBalance.Value));
 			VolumeSliderValue = string.Format("{0}%", Math.Truncate(sldVolume.Value));
+            Instance = this;
 		}
 
         #endregion

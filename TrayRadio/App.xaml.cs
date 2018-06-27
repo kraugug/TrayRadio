@@ -121,7 +121,7 @@ namespace TrayRadio
 			};
 			item = contextMenuStrip.Items.Add("Preferences");
 			item.Image = IconPreferences.ToBitmap();
-			item.Click += (object sender, EventArgs args) =>
+			item.Click += (object sender, EventArgs args) =>    
 			{
 				if (_preferencesWnd == null)
 				{

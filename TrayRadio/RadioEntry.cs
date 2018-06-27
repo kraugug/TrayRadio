@@ -49,6 +49,9 @@ namespace TrayRadio
 
 		internal BASS_CHANNELINFO ChannelInfo { get; set; }
 
+        [XmlIgnore]
+        public string ActiveRecordingFileName { get; private set; }
+
 		internal ShoutcastMetadata Info { get { return ShoutcastMetadata.From(Marshal.PtrToStringAnsi(Bass.BASS_ChannelGetTags(ChannelHandle, BASSTag.BASS_TAG_META))); } }
 
 		internal bool IsActive
@@ -189,7 +192,9 @@ namespace TrayRadio
 			_recordFileStream = new FileStream(fileToSave, FileMode.CreateNew);
 			if (_recordFileStream != null)
 			{
+                ActiveRecordingFileName = fileToSave;
                 IsRecording = true;
+                PreferencesWindow.Instance?.RefreshRecordingsList();
 			}
 		}
 
@@ -202,7 +207,9 @@ namespace TrayRadio
 				_recordFileStream.Close();
 				_recordFileStream.Dispose();
 				_recordFileStream = null;
-			}
+                ActiveRecordingFileName = null;
+                PreferencesWindow.Instance?.RefreshRecordingsList();
+            }
 		}
 
 		protected void SetBalance(double balance)
