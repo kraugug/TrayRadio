@@ -177,7 +177,8 @@ namespace TrayRadio
 
 		public void StartRecording()
 		{
-			string radioRecordFolder = Path.Combine(Properties.Settings.Default.RecordsFolder, App.Instance.ActiveRadio.Name);
+            OnBeforeStartRecording?.Invoke(this, EventArgs.Empty);
+            string radioRecordFolder = Path.Combine(Properties.Settings.Default.RecordsFolder, App.Instance.ActiveRadio.Name);
 			if (!Directory.Exists(radioRecordFolder))
 				Directory.CreateDirectory(radioRecordFolder);
 			string fileTitle;
@@ -196,10 +197,12 @@ namespace TrayRadio
                 IsRecording = true;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
 			}
-		}
+            OnAfterStartRecording?.Invoke(this, EventArgs.Empty);
+        }
 
 		public void StopRecording()
 		{
+            OnBeforeStopRecording?.Invoke(this, EventArgs.Empty);
 			if (IsRecording)
 			{
 				IsRecording = false;
@@ -210,7 +213,8 @@ namespace TrayRadio
                 ActiveRecordingFileName = null;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
             }
-		}
+            OnAfterStopRecording?.Invoke(this, EventArgs.Empty);
+        }
 
 		protected void SetBalance(double balance)
 		{
@@ -266,9 +270,13 @@ namespace TrayRadio
 
 		public event EventHandler OnAfterPlay;
 		public event EventHandler OnAfterStop;
-		public event EventHandler OnBeforePlay;
+        public event EventHandler OnAfterStartRecording;
+        public event EventHandler OnAfterStopRecording;
+        public event EventHandler OnBeforePlay;
 		public event EventHandler OnBeforeStop;
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler OnBeforeStartRecording;
+        public event EventHandler OnBeforeStopRecording;
+        public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion
 	}

@@ -8,6 +8,7 @@ Changes:
 
 [27.06.2018 -> 1.6.0]
   - Recording list enhancement.
+  - Added new event into the RadioEntry.
 
 [26.06.2018 -> 1.6.0]
   - Added recording list and stuff around it.
