@@ -54,7 +54,7 @@ namespace TrayRadio
 			// Check for 'first' version string validity...
 			string[] firstVersionParts = str.Split('.');
 			var results = firstVersionParts.Where(fvp => fvp.IsValidAsNumber());
-			if (results.Count() != firstVersionParts.Length)
+			if (results.Count() != ((digits > 0) ? Math.Min(firstVersionParts.Length, digits) : firstVersionParts.Length))
 				throw new ArgumentException("Invalid version string.", "first");
 			// Check for 'second' version string validity...
 			string[] secondVersionParts = s.Split('.');

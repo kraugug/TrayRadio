@@ -19,7 +19,7 @@ namespace TrayRadio.Updater
 			if (updateInfo == null)
 				throw new ArgumentNullException(Properties.Resources.Param_UpdateInfo);
 			UpdateInfo = updateInfo;
-			IsNewAvailable = UpdateInfo.Version.CompareVersion(AboutWindow.Version) >= 0;
+			IsNewAvailable = UpdateInfo.Version.CompareVersion(AboutWindow.Version, 3) >= 0;
 		}
 
 		#endregion
