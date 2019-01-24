@@ -57,7 +57,11 @@ namespace TrayRadio
 		internal bool IsActive
 		{
 			get { return _active; }
-			private set { _active = MenuItem.DefaultItem = value; }
+			private set
+			{
+				_active = value;
+				MenuStripItem.Font = new System.Drawing.Font(MenuStripItem.Font, _active ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular);
+			}
 		}
 
 		internal bool IsNewSong
@@ -91,8 +95,6 @@ namespace TrayRadio
 			}
 		}
 
-		internal MenuItem MenuItem { get; }
-
 		internal ToolStripItem MenuStripItem { get; }
 
 		internal bool Mute
@@ -111,7 +113,7 @@ namespace TrayRadio
 			set
 			{
 				_name = value;
-				MenuStripItem.Text = MenuItem.Text = _name;
+				MenuStripItem.Text = _name;
 			}
 		}
 
@@ -250,8 +252,6 @@ namespace TrayRadio
 		public RadioEntry()
 		{
 			ChannelHandle = 0;
-			MenuItem = new MenuItem();
-			MenuItem.Click += (object sender, EventArgs args) => { Play(); };
 			MenuStripItem = new ToolStripMenuItem();
 			MenuStripItem.Click += (object sender, EventArgs args) => { Play(); };
 			_downloadProc = new DOWNLOADPROC(DownloadProc);
@@ -259,7 +259,7 @@ namespace TrayRadio
 
 		public RadioEntry(string name, string url) : this()
 		{
-			MenuItem.Text = name;
+			MenuStripItem.Text = name;
 			Name = name;
 			Url = url;
 		}

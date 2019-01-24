@@ -210,15 +210,17 @@ namespace TrayRadio
 								switch (status)
 								{
 									case BASSActive.BASS_ACTIVE_PLAYING:
-										Dispatcher.Invoke(new Action(() => {
-											_trayIcon.ContextMenuStrip.Items[0].Enabled = true;
-											ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Bold);
-										}));
-										_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
-										string text = string.Format("{0} - {1}", TrayRadio.Properties.Resources.TrayRadio, ActiveRadio.Name);
-										_trayIcon.Text = text.Length >= 60 ? text.Substring(0, 60) + "..." : text;
 										if (ActiveRadio.IsNewSong || (status != _radioStatus))
 										{
+											Dispatcher.Invoke(new Action(() =>
+											{
+												_trayIcon.ContextMenuStrip.Items[0].Enabled = true;
+												ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Bold);
+											}));
+											_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
+											string text = string.Format("{0} - {1}", TrayRadio.Properties.Resources.TrayRadio, ActiveRadio.Name);
+											_trayIcon.Text = text.Length >= 60 ? text.Substring(0, 60) + "..." : text;
+
 											bool wasRecorrding = ActiveRadio.IsRecording;
 											ActiveRadio.StopRecording();
 											System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { _songsHistoryWnd.Add(ActiveRadio); }));											
@@ -228,24 +230,30 @@ namespace TrayRadio
 										}
 										break;
 									case BASSActive.BASS_ACTIVE_STALLED:
-										_trayIcon.Icon = IconAntennaSignalStalled;
 										if (status != _radioStatus)
 										{
-											ShowBallonTip(string.Format("{0} - Stalled", ActiveRadio.Name), ToolTipIcon.Warning);
+                                            _trayIcon.Icon = IconAntennaSignalStalled;
+                                            ShowBallonTip(string.Format("{0} - Stalled", ActiveRadio.Name), ToolTipIcon.Warning);
 										}
 										break;
 									default:
-										Dispatcher.BeginInvoke(new Action(() => { ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Regular); }));
-										Dispatcher.Invoke(new Action(() => { _trayIcon.ContextMenuStrip.Items[0].Enabled = false; }));
-											_trayIcon.Icon = IconAntennaNoSignal;
-										_trayIcon.Text = TrayRadio.Properties.Resources.TrayRadio;
-										if (status != _radioStatus)
-											ShowBallonTip(string.Format("{0} - Stopped", ActiveRadio.Name), ToolTipIcon.Info);
+                                        if (_radioStatus != status)
+                                        {
+                                            Dispatcher.Invoke(new Action(() =>
+											{
+												ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Regular);
+												_trayIcon.ContextMenuStrip.Items[0].Enabled = false;
+											}));
+                                            _trayIcon.Icon = IconAntennaNoSignal;
+                                            _trayIcon.Text = TrayRadio.Properties.Resources.TrayRadio;
+                                            if (status != _radioStatus)
+                                                ShowBallonTip(string.Format("{0} - Stopped", ActiveRadio.Name), ToolTipIcon.Info);
+                                        }
 										break; 
 								}
 								_radioStatus = status;
 							}
-							Thread.Sleep(1);
+							Thread.Sleep(100);
 						} while (!_cts.IsCancellationRequested);
 					});
 					// Songs history...
@@ -337,6 +345,8 @@ namespace TrayRadio
 				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("MetalRock06", "http://listen.radionomy.com/MetalRock06"));
 				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("PulseRadio - Trance", "http://178.32.98.117:80/pulstranceHD.mp3"));
 				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("Radio BEAT", "http://icecast2.play.cz/radiobeat128.mp3"));
+				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("Jack FM", "http://playerservices.streamtheworld.com/api/livestream-redirect/JACK_FM.mp3"));
+				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("Electro Swing Radio", "http://streamer.radio.co/s2c3cc784b/listen"));
 				TrayRadio.Properties.Settings.Default.RecordsFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Records");
 			}
 			TrayRadio.Properties.Settings.Default.Radios.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
@@ -345,13 +355,13 @@ namespace TrayRadio
 					{
 						case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
 							foreach (RadioEntry item in e.NewItems)
-								_trayIcon.ContextMenu.MenuItems.Add(TrayRadio.Properties.Settings.Default.Radios.Count, item.MenuItem);
-							if (_trayIcon.ContextMenu.MenuItems[1].Text.CompareTo("-") != 0)
-								_trayIcon.ContextMenu.MenuItems.Add(1, new MenuItem("-"));
+								_trayIcon.ContextMenuStrip.Items.Insert(TrayRadio.Properties.Settings.Default.Radios.Count, item.MenuStripItem);
+							if (!(_trayIcon.ContextMenuStrip.Items[1] is ToolStripSeparator/*.Text.CompareTo("-") != 0*/))
+								_trayIcon.ContextMenuStrip.Items.Insert(1, new ToolStripSeparator());
 							break;
 						case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
 							RadioEntry radio = e.OldItems[0] as RadioEntry;
-							_trayIcon.ContextMenu.MenuItems.Remove(radio.MenuItem);
+							_trayIcon.ContextMenuStrip.Items.Remove(radio.MenuStripItem);
 							if (ActiveRadio?.Name.CompareTo(radio.Name) == 0)
 								if (ActiveRadio.IsActive)
 								{
@@ -359,7 +369,7 @@ namespace TrayRadio
 									ActiveRadio = null;
 								}
 							if (TrayRadio.Properties.Settings.Default.Radios.Count == 0)
-								_trayIcon.ContextMenu.MenuItems.RemoveAt(1);
+								_trayIcon.ContextMenuStrip.Items.RemoveAt(1);
 							break;
 					}
 				};

@@ -1,10 +1,19 @@
 Tray Radio - Simple Internet Radio Player
 
-Version: 1.6.0
+Version: 1.6.0.b2
 Author: Michal Heczko
 Contact: micky.heczko@gmail.com
 
 Changes:
+
+[24.01.2019 - 1.6.0.b2]
+  - Thread sleep time changed from 1ms to 100ms in main loop to prevent the tray icon
+    context menu failure.
+  - Added new (Electro Swing Radio) default radio entry.
+
+[26.09.2018 -> 1.6.0.b1]
+  - Tray icon context menu fixes.
+  - Added new (Jack FM) default radio station.
 
 [27.06.2018 -> 1.6.0]
   - Recording list enhancement.
@@ -15,7 +24,8 @@ Changes:
 
 [15.02.2018 -> 1.6.0]
   - Added posibility to record the playing radio. Initial stage, possible bugs.
-    Not all ideas were included (again bit drunk) :).
+  - Tray icon context menu changed from MenuStrip to ContextMenuStrip due to possibility to have an images.
+  - Not all ideas were included (again bit drunk) :).
 
 [17.10.2017 -> 1.5.2]
   - Moved to http://trayradio.kraugug.net

@@ -7,9 +7,9 @@
 ;
 #define AppId "{CF837F0A-2961-4BB9-8A07-51A16D9C2D75}"
 #define AppName "Tray Radio"
-#define AppVersion "1.5.2"
+#define AppVersion "1.6.0.b2"
 #define AppPublisher "Michal Heczko"
-#define AppURL "https://trayradio.000webhostapp.com/"
+#define AppURL "http://trayradio.kraugug.net"
 #define AppExeName "TrayRadio.exe"
 
 #define Path32Binary SourcePath + "\TrayRadio\bin\x86\Release\"
@@ -49,7 +49,7 @@ Name: "src"; Description: "Source Codes";
 
 [Files]
 ; Source Codes
-Source: "{#SourcePath}\TrayRadio\*"; DestDir: "{app}\Sources\TrayRadio"; Components: "src"; Flags: recursesubdirs; Excludes: "bin\*,Help\*,obj\*,packages\*,*.exe";
+Source: "{#SourcePath}\TrayRadio\*"; DestDir: "{app}\Sources\TrayRadio"; Components: "src"; Flags: recursesubdirs; Excludes: "bin\*,Help\*,obj\*,packages\*,*.exe,.vs\*";
 Source: "{#SourcePath}\www\*"; DestDir: "{app}\Sources\www"; Components: "src"; Flags: recursesubdirs;
 Source: "{#SourcePath}\TrayRadio\Changelog.txt"; DestDir: "{app}";
 Source: "{#SourcePath}\License"; DestDir: "{app}"; DestName: "License.txt";
