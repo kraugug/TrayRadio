@@ -26,10 +26,13 @@
 		</Grid.RowDefinitions>
 		<Image Grid.Row="0" Width="80" Source="/Resources/Antenna_Signal.png"/>
 		<Label Name="lblNameAndVersion" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="22" FontWeight="SemiBold"/>
-		<Label Grid.Row="2" HorizontalContentAlignment="Center" Content="Tray Radio - Copyright © 2018 Michal Heczko" FontSize="12"/>
+		<Label Grid.Row="2" HorizontalContentAlignment="Center" Content="Tray Radio - Copyright © 2019 Michal Heczko" FontSize="12"/>
 		<Label Grid.Row="3" HorizontalContentAlignment="Center" Content="Michal Heczko  &lt;micky.heczko@gmail.com&gt;" FontSize="12"/>
-		<Label Grid.Row="4" HorizontalContentAlignment="Center" Content="http://trayradio.kraugug.net" FontSize="12" Foreground="Navy" MouseEnter="Label_MouseEnter"
-		       MouseLeave="Label_MouseLeave" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+		<Label Grid.Row="4" HorizontalContentAlignment="Center"
+		       Content="http://trayradio.kraugug.net" FontSize="12"
+		       Foreground="Navy" MouseEnter="Label_MouseEnter"
+		       MouseLeave="Label_MouseLeave"
+		       MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
 		<Button Grid.Row="6" Width="60" Command="local:AboutWindow.CommandShowLicense" Content="License"/>
 	</Grid>
 </Window>

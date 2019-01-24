@@ -62,7 +62,7 @@ namespace TrayRadio
 			if (results.Count() != secondVersionParts.Length)
 				throw new ArgumentException("Invalid version string.", "first");
 			// Now finally compare the version...
-			int versionDigits = Math.Max(firstVersionParts.Length, secondVersionParts.Length);
+			int versionDigits = Math.Min(firstVersionParts.Length, secondVersionParts.Length);
 			int count = digits == 0 ? versionDigits : Math.Min(versionDigits, digits);
 			int[] versionParts = new int[count];
 			for (int index = 0; index < count; index++)
