@@ -7,6 +7,9 @@ Contact: micky.heczko@gmail.com
 Changes:
 
 [25.01.2019 - 1.6.0.b3]
+  - Connected with Appveyor.
+  - Removed unused NuGet packages.
+  - Added new RecordFileStream class. This is for future ID3 tagging support.
   - Changed default records base folder from application location to Environment.SpecialFolder.CommonApplicationData,
     which means "C:\ProgramData" on Windows 7/8/10 and "C:\Documents and Settings\All Users\Application Data" on Windows XP.
   - Added own SearchDirectory function in case of UnauthorizedAccessException.

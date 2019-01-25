@@ -28,12 +28,15 @@ namespace TrayRadio
 		private bool _isRecording;
 		private bool _mute;
 		private string _name;
-		private FileStream _recordFileStream;
+		private RecordFileStream _recordFileStream;
 		private double _volume;
 
 		#endregion
 
 		#region Properties
+
+		[XmlIgnore]
+		public string ActiveRecordingFileName { get { return _recordFileStream?.Name; } }
 
 		internal double Balance
 		{
@@ -48,9 +51,6 @@ namespace TrayRadio
 		internal int ChannelHandle { get; set; }
 
 		internal BASS_CHANNELINFO ChannelInfo { get; set; }
-
-        [XmlIgnore]
-        public string ActiveRecordingFileName { get; private set; }
 
 		internal ShoutcastMetadata Info { get { return ShoutcastMetadata.From(Marshal.PtrToStringAnsi(Bass.BASS_ChannelGetTags(ChannelHandle, BASSTag.BASS_TAG_META))); } }
 
@@ -192,10 +192,10 @@ namespace TrayRadio
 			foreach (char ch in System.IO.Path.GetInvalidFileNameChars())
 				if ((ch != '\\') && (ch != ':'))
 					fileToSave = fileToSave.Replace(ch, '-');
-			_recordFileStream = new FileStream(fileToSave, FileMode.Create);
+			_recordFileStream = new RecordFileStream(fileToSave, FileMode.Create);
 			if (_recordFileStream != null)
 			{
-                ActiveRecordingFileName = fileToSave;
+				_recordFileStream.ParseInfo(App.Instance.ActiveRadio.Info.Title);
                 IsRecording = true;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
 			}
@@ -212,7 +212,6 @@ namespace TrayRadio
 				_recordFileStream.Close();
 				_recordFileStream.Dispose();
 				_recordFileStream = null;
-                ActiveRecordingFileName = null;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
             }
             OnAfterStopRecording?.Invoke(this, EventArgs.Empty);

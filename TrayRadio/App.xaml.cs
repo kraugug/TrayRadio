@@ -226,7 +226,7 @@ namespace TrayRadio
 											_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 											bool wasRecorrding = ActiveRadio.IsRecording;
 											ActiveRadio.StopRecording();
-											System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { _songsHistoryWnd.Add(ActiveRadio); }));											
+											App.Current.Dispatcher.Invoke(new Action(() => { _songsHistoryWnd.Add(ActiveRadio); }));											
 											ShowBallonTip(string.Format("{0} - Playing\n\n{1}", ActiveRadio.Name, ActiveRadio.Info.Title), ToolTipIcon.Info);
 											if (wasRecorrding)
 												ActiveRadio.StartRecording();
