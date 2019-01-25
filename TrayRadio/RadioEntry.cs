@@ -192,7 +192,7 @@ namespace TrayRadio
 			foreach (char ch in System.IO.Path.GetInvalidFileNameChars())
 				if ((ch != '\\') && (ch != ':'))
 					fileToSave = fileToSave.Replace(ch, '-');
-			_recordFileStream = new FileStream(fileToSave, FileMode.CreateNew);
+			_recordFileStream = new FileStream(fileToSave, FileMode.Create);
 			if (_recordFileStream != null)
 			{
                 ActiveRecordingFileName = fileToSave;

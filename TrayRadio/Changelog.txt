@@ -1,10 +1,18 @@
 Tray Radio - Simple Internet Radio Player
 
-Version: 1.6.0.b2
+Version: 1.6.0.b3
 Author: Michal Heczko
 Contact: micky.heczko@gmail.com
 
 Changes:
+
+[25.01.2019 - 1.6.0.b3]
+  - Changed default records base folder from application location to Environment.SpecialFolder.CommonApplicationData,
+    which means "C:\ProgramData" on Windows 7/8/10 and "C:\Documents and Settings\All Users\Application Data" on Windows XP.
+  - Added own SearchDirectory function in case of UnauthorizedAccessException.
+  - Show recording icons fix.
+  - Recording file now opens with mode FileMode.Create instead of FileMode.CreateNew.
+  - Added new buttons to change folder for records to default value and for opening it.
 
 [24.01.2019 - 1.6.0.b2]
   - Fixed updater checking for new updates.

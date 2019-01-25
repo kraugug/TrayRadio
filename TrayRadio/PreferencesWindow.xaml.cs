@@ -13,9 +13,13 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.AccessControl;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 
 namespace TrayRadio
@@ -35,8 +39,10 @@ namespace TrayRadio
         public static readonly RoutedCommand CommandExportRadios = new RoutedCommand();
 		public static readonly RoutedCommand CommandImportRadios = new RoutedCommand();
         public static readonly RoutedCommand CommandOpenRecordingInFolder = new RoutedCommand();
-        public static readonly RoutedCommand CommandPlayRecording = new RoutedCommand();
+		public static readonly RoutedCommand CommandOpenRecordsFolder = new RoutedCommand();
+		public static readonly RoutedCommand CommandPlayRecording = new RoutedCommand();
         public static readonly RoutedCommand CommandRemoveRadio = new RoutedCommand();
+		public static readonly RoutedCommand CommandResetRecordsFolder = new RoutedCommand();
 		public static readonly RoutedCommand CommandSaveRadio = new RoutedCommand();
         public static readonly DependencyProperty RecordingsProperty = DependencyProperty.Register("Recordings", typeof(ObservableCollection<RecordingInfo>), typeof(PreferencesWindow), new PropertyMetadata(null));
         public static readonly DependencyProperty SelectedRadioProperty = DependencyProperty.Register("SelectedRadio", typeof(RadioEntry), typeof(PreferencesWindow), new PropertyMetadata(null));
@@ -106,7 +112,10 @@ namespace TrayRadio
 			System.Windows.Forms.FolderBrowserDialog dlgBrowseFolder = new System.Windows.Forms.FolderBrowserDialog();
 			dlgBrowseFolder.SelectedPath = Properties.Settings.Default.RecordsFolder;
 			if (dlgBrowseFolder.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
 				Properties.Settings.Default.RecordsFolder = dlgBrowseFolder.SelectedPath;
+				RefreshRecordingsList();
+			}
 		}
 
         private void CommandDeleteRecording_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -170,7 +179,17 @@ namespace TrayRadio
             Process.Start("explorer.exe", string.Format("/select,\"{0}\"", e.Parameter as string));
         }
 
-        private void CommandPlayRecording_Executed(object sender, ExecutedRoutedEventArgs e)
+		private void CommandOpenRecordsFolder_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = Directory.Exists(Properties.Settings.Default.RecordsFolder);
+		}
+
+		private void CommandOpenRecordsFolder_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			Process.Start("explorer.exe", string.Format("/select,\"{0}\"", Properties.Settings.Default.RecordsFolder));
+		}
+
+		private void CommandPlayRecording_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Process.Start(e.Parameter as string);
         }
@@ -183,6 +202,17 @@ namespace TrayRadio
 		private void CommandRemoveRadio_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			TrayRadio.Properties.Settings.Default.Radios.Remove(SelectedRadio);
+		}
+
+		private void CommandResetRecordsFolder_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = Properties.Settings.Default.RecordsFolder.ToUpper().CompareTo(App.DefaultRecordsFolder.ToUpper()) != 0;
+		}
+
+		private void CommandResetRecordsFolder_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			Properties.Settings.Default.RecordsFolder = App.DefaultRecordsFolder;
+			RefreshRecordingsList();
 		}
 
 		private void CommandSaveRadio_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -243,10 +273,57 @@ namespace TrayRadio
         internal void RefreshRecordingsList()
         {
             Recordings.Clear();
-            foreach (string folder in Directory.GetDirectories(Properties.Settings.Default.RecordsFolder))
-                foreach (string file in Directory.GetFiles(folder)/*.Where(f => Path.GetExtension(f).ToUpper().CompareTo(".MP3") == 0)*/)
-                    Recordings.Add(new RecordingInfo(file) { IsActive = App.Instance.ActiveRadio != null && App.Instance.ActiveRadio.IsRecording && file.CompareTo(App.Instance.ActiveRadio.ActiveRecordingFileName) == 0 });
-        }
+			Task.Factory.StartNew(() =>
+			{
+				List<RecordingInfo> recordings = new List<RecordingInfo>();
+				SearchDirectory(new DirectoryInfo(Properties.Settings.Default.RecordsFolder), "*.MP3", recordings, 1);
+				Dispatcher.BeginInvoke(new Action(() => { Recordings = new ObservableCollection<RecordingInfo>(recordings); }));
+			});
+		}
+
+		internal void SearchDirectory(DirectoryInfo dirInfo, string searchPattern, List<RecordingInfo> files, int level = 0)
+		{
+			try
+			{
+				// Search for the directories...
+				if (level > 0)
+					foreach (DirectoryInfo subDirInfo in dirInfo.GetDirectories())
+						try
+						{
+							SearchDirectory(subDirInfo, searchPattern, files, --level);
+						}
+						catch (UnauthorizedAccessException uaex)
+						{
+							Debug.WriteLine("[{0}] {1}: {2}", new object[] { level, uaex.GetType().FullName, uaex.Message });
+						}
+				// Search for the files...
+				FileInfo[] filesInfo = dirInfo.GetFiles(searchPattern);
+				foreach (FileInfo fileInfo in filesInfo)
+				{
+					try
+					{
+						AuthorizationRuleCollection arc = fileInfo.GetAccessControl().GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+						bool denyAccess = false;
+						foreach (FileSystemAccessRule fsar in arc)
+							if (fsar.AccessControlType == AccessControlType.Deny && (fsar.FileSystemRights & FileSystemRights.ListDirectory) == FileSystemRights.ListDirectory)
+							{
+								denyAccess = true;
+								break;
+							}
+						if (!denyAccess)
+							files.Add(new RecordingInfo(fileInfo.FullName) { IsActive = App.Instance.ActiveRadio != null && App.Instance.ActiveRadio.IsRecording && fileInfo.FullName.CompareTo(App.Instance.ActiveRadio.ActiveRecordingFileName) == 0 });
+					}
+					catch (Exception ex)
+					{
+						Debug.WriteLine("[{0}] {1}: {2}", new object[] { level, ex.GetType().FullName, ex.Message });
+					}
+				}
+			}
+			catch (UnauthorizedAccessException uaex)
+			{
+				Debug.WriteLine("[{0}] {1}: {2}", new object[] { level, uaex.GetType().FullName, uaex.Message });
+			}
+		}
 
         private void sldBalance_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
@@ -295,7 +372,9 @@ namespace TrayRadio
 		{
 			this.DisableButtons(Extensions.WindowButtons.Maximize | Extensions.WindowButtons.Minimize);
             RefreshRecordingsList();
-        }
+			TextBoxRecordsFolder.Focus();
+			TextBoxRecordsFolder.SelectAll();
+		}
 
 		#endregion
 
@@ -311,6 +390,6 @@ namespace TrayRadio
             Instance = this;
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

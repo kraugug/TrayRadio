@@ -29,6 +29,8 @@ namespace TrayRadio
 	{
 		#region Fields
 
+		public static readonly string DefaultRecordsFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Tray Radio", "Records");
+
 		private static readonly Icon IconAntennaSignalRecording = Debugger.IsAttached ? Icon.FromHandle(TrayRadio.Properties.Resources.Debug_Antenna_Recording.GetHicon()) : Icon.FromHandle(TrayRadio.Properties.Resources.Antenna_Signal_Recording.GetHicon());
 		private static readonly Icon IconAntennaSignal = Debugger.IsAttached ? Icon.FromHandle(TrayRadio.Properties.Resources.Debug_Antenna_Signal.GetHicon()) : Icon.FromHandle(TrayRadio.Properties.Resources.Antenna_Signal.GetHicon());
 		private static readonly Icon IconAntennaSignalStalled = Debugger.IsAttached ? Icon.FromHandle(TrayRadio.Properties.Resources.Debug_Antenna_Signal_Stalled.GetHicon()) : Icon.FromHandle(TrayRadio.Properties.Resources.Antenna_Signal_Stalled.GetHicon());
@@ -101,6 +103,7 @@ namespace TrayRadio
 			_recordingStart.Click += (object sender, EventArgs args) =>
 			{
 				ActiveRadio?.StartRecording();
+				_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 			};
 			_recordingStop = contextMenuStrip.Items.Add("Stop Recording");
 			_recordingStop.Click += (object sender, EventArgs args) =>
@@ -109,6 +112,7 @@ namespace TrayRadio
 				{
 					ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Regular);
 					ActiveRadio.StopRecording();
+					_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 				}
 			};
 			_recordingStop.Enabled = false;				
@@ -217,10 +221,9 @@ namespace TrayRadio
 												_trayIcon.ContextMenuStrip.Items[0].Enabled = true;
 												ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Bold);
 											}));
-											_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 											string text = string.Format("{0} - {1}", TrayRadio.Properties.Resources.TrayRadio, ActiveRadio.Name);
 											_trayIcon.Text = text.Length >= 60 ? text.Substring(0, 60) + "..." : text;
-
+											_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 											bool wasRecorrding = ActiveRadio.IsRecording;
 											ActiveRadio.StopRecording();
 											System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { _songsHistoryWnd.Add(ActiveRadio); }));											
@@ -233,7 +236,7 @@ namespace TrayRadio
 										if (status != _radioStatus)
 										{
                                             _trayIcon.Icon = IconAntennaSignalStalled;
-                                            ShowBallonTip(string.Format("{0} - Stalled", ActiveRadio.Name), ToolTipIcon.Warning);
+											ShowBallonTip(string.Format("{0} - Stalled", ActiveRadio.Name), ToolTipIcon.Warning);
 										}
 										break;
 									default:
@@ -259,7 +262,7 @@ namespace TrayRadio
 					// Songs history...
 					_songsHistoryWnd = new SongsHistoryWindow();
 					// Autoplay...
-					if (TrayRadio.Properties.Settings.Default.AutoplayRadio)
+					if (TrayRadio.Properties.Settings.Default.AutoplayRadio && !string.IsNullOrEmpty(TrayRadio.Properties.Settings.Default.AutoplayRadioName))
 						(ActiveRadio = TrayRadio.Properties.Settings.Default.Radios[TrayRadio.Properties.Settings.Default.AutoplayRadioName]).Play();
 					// Updater...
 					_updater = new Updater.Updater();
@@ -347,32 +350,32 @@ namespace TrayRadio
 				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("Radio BEAT", "http://icecast2.play.cz/radiobeat128.mp3"));
 				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("Jack FM", "http://playerservices.streamtheworld.com/api/livestream-redirect/JACK_FM.mp3"));
 				TrayRadio.Properties.Settings.Default.Radios.Add(new RadioEntry("Electro Swing Radio", "http://streamer.radio.co/s2c3cc784b/listen"));
-				TrayRadio.Properties.Settings.Default.RecordsFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Records");
+				TrayRadio.Properties.Settings.Default.RecordsFolder = DefaultRecordsFolder;
 			}
 			TrayRadio.Properties.Settings.Default.Radios.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
+			{
+				switch (e.Action)
 				{
-					switch (e.Action)
-					{
-						case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-							foreach (RadioEntry item in e.NewItems)
-								_trayIcon.ContextMenuStrip.Items.Insert(TrayRadio.Properties.Settings.Default.Radios.Count, item.MenuStripItem);
-							if (!(_trayIcon.ContextMenuStrip.Items[1] is ToolStripSeparator/*.Text.CompareTo("-") != 0*/))
-								_trayIcon.ContextMenuStrip.Items.Insert(1, new ToolStripSeparator());
-							break;
-						case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-							RadioEntry radio = e.OldItems[0] as RadioEntry;
-							_trayIcon.ContextMenuStrip.Items.Remove(radio.MenuStripItem);
-							if (ActiveRadio?.Name.CompareTo(radio.Name) == 0)
-								if (ActiveRadio.IsActive)
-								{
-									ActiveRadio.Stop();
-									ActiveRadio = null;
-								}
-							if (TrayRadio.Properties.Settings.Default.Radios.Count == 0)
-								_trayIcon.ContextMenuStrip.Items.RemoveAt(1);
-							break;
-					}
-				};
+					case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+						foreach (RadioEntry item in e.NewItems)
+							_trayIcon.ContextMenuStrip.Items.Insert(TrayRadio.Properties.Settings.Default.Radios.Count, item.MenuStripItem);
+						if (!(_trayIcon.ContextMenuStrip.Items[1] is ToolStripSeparator/*.Text.CompareTo("-") != 0*/))
+							_trayIcon.ContextMenuStrip.Items.Insert(1, new ToolStripSeparator());
+						break;
+					case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+						RadioEntry radio = e.OldItems[0] as RadioEntry;
+						_trayIcon.ContextMenuStrip.Items.Remove(radio.MenuStripItem);
+						if (ActiveRadio?.Name.CompareTo(radio.Name) == 0)
+							if (ActiveRadio.IsActive)
+							{
+								ActiveRadio.Stop();
+								ActiveRadio = null;
+							}
+						if (TrayRadio.Properties.Settings.Default.Radios.Count == 0)
+							_trayIcon.ContextMenuStrip.Items.RemoveAt(1);
+						break;
+				}
+			};
 			TrayRadio.Properties.Settings.Default.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
 			{
 				switch (e.PropertyName)
