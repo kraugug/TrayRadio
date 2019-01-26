@@ -12,6 +12,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "www", "www", "{914CD048-9504-4887-9D1B-3EF79FF2946E}"
+	ProjectSection(SolutionItems) = preProject
+		..\www\index.php = ..\www\index.php
+		..\www\trayradio.xml = ..\www\trayradio.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
