@@ -11,7 +11,7 @@ namespace TrayRadio
     {
         #region Fields
 
-        private bool m_isActive = false;
+        private bool m_IsActive = false;
 
         #endregion
 
@@ -19,10 +19,10 @@ namespace TrayRadio
 
         public bool IsActive
         {
-            get { return m_isActive; }
+            get { return m_IsActive; }
             set
             {
-                m_isActive = value;
+                m_IsActive = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsActive)));
             }
         }

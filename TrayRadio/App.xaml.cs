@@ -37,19 +37,19 @@ namespace TrayRadio
 		private static readonly Icon IconAntennaNoSignal = Debugger.IsAttached ? Icon.FromHandle(TrayRadio.Properties.Resources.Debug_Antenna_No_Signal.GetHicon()) : Icon.FromHandle(TrayRadio.Properties.Resources.Antenna_No_Signal.GetHicon());
 		private static readonly Icon IconPreferences = Icon.FromHandle(TrayRadio.Properties.Resources.Preferences.GetHicon());
 
-		private BalanceVolumeWindow _balanceVolumeWnd;
-		private ToolStripItem _checkForUpdate;
-		private CancellationTokenSource _cts = new CancellationTokenSource();
-		private bool _isInitialised;
-		private KeyboardHook _keyboardHook;
-		private Mutex _mutex = null;
-		private PreferencesWindow _preferencesWnd;
-		private ToolStripItem _recordingStart;
-		private ToolStripItem _recordingStop;
-		private BASSActive _radioStatus = BASSActive.BASS_ACTIVE_STOPPED;
-		private SongsHistoryWindow _songsHistoryWnd;
-		private NotifyIcon _trayIcon;
-		private Updater.Updater _updater;
+		private BalanceVolumeWindow m_BalanceVolumeWnd;
+		private ToolStripItem m_CheckForUpdate;
+		private CancellationTokenSource m_Cts = new CancellationTokenSource();
+		private bool m_IsInitialised;
+		private KeyboardHook m_KeyboardHook;
+		private Mutex m_Mutex = null;
+		private PreferencesWindow m_PreferencesWnd;
+		private ToolStripItem m_RecordingStart;
+		private ToolStripItem m_RecordingStop;
+		private BASSActive m_RadioStatus = BASSActive.BASS_ACTIVE_STOPPED;
+		private SongsHistoryWindow m_SongsHistoryWnd;
+		private NotifyIcon m_TrayIcon;
+		private Updater.Updater m_Updater;
 
 		#endregion
 
@@ -68,8 +68,8 @@ namespace TrayRadio
 			ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 			contextMenuStrip.Opening += (object sender, CancelEventArgs args) =>
 			{
-				_recordingStart.Enabled = ActiveRadio != null ? !ActiveRadio.IsRecording && ActiveRadio.IsActive : false;
-				_recordingStop.Enabled = ActiveRadio != null ? ActiveRadio.IsRecording : false;
+				m_RecordingStart.Enabled = ActiveRadio != null ? !ActiveRadio.IsRecording && ActiveRadio.IsActive : false;
+				m_RecordingStop.Enabled = ActiveRadio != null ? ActiveRadio.IsRecording : false;
 			};
 			ToolStripItem item = contextMenuStrip.Items.Add("Stop Playing");
 			item.Enabled = false;
@@ -81,9 +81,11 @@ namespace TrayRadio
 				radio.OnBeforePlay += RadioBeforePlay;
 				radio.OnAfterPlay += RadioAfterPlay;
 				radio.OnAfterStop += RadioAfterStop;
+				radio.OnAfterStartRecording += RadioAfterStartRecording;
+				radio.OnAfterStopRecording += RadioAfterStopRecording;
 				radio.PropertyChanged += (object sender, PropertyChangedEventArgs args) =>
 				{
-					Dispatcher.BeginInvoke(new Action(() => { _recordingStart.Enabled = !(_recordingStop.Enabled = ActiveRadio.IsRecording); }));
+					Dispatcher.BeginInvoke(new Action(() => { m_RecordingStart.Enabled = !(m_RecordingStop.Enabled = ActiveRadio.IsRecording); }));
 				};
 				contextMenuStrip.Items.Add(radio.MenuStripItem);
 			}
@@ -92,49 +94,49 @@ namespace TrayRadio
 			item = contextMenuStrip.Items.Add("Songs History");
 			item.Click += (object sender, EventArgs args) =>
 			{
-				if (_songsHistoryWnd.IsVisible)
-					_songsHistoryWnd.Focus();
+				if (m_SongsHistoryWnd.IsVisible)
+					m_SongsHistoryWnd.Focus();
 				else
-					_songsHistoryWnd.Show();
+					m_SongsHistoryWnd.Show();
 			};
 			
 			contextMenuStrip.Items.Add("-");
-			_recordingStart = contextMenuStrip.Items.Add("Start Recording");
-			_recordingStart.Click += (object sender, EventArgs args) =>
+			m_RecordingStart = contextMenuStrip.Items.Add("Start Recording");
+			m_RecordingStart.Click += (object sender, EventArgs args) =>
 			{
 				ActiveRadio?.StartRecording();
-				_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
+				//m_TrayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 			};
-			_recordingStop = contextMenuStrip.Items.Add("Stop Recording");
-			_recordingStop.Click += (object sender, EventArgs args) =>
+			m_RecordingStop = contextMenuStrip.Items.Add("Stop Recording");
+			m_RecordingStop.Click += (object sender, EventArgs args) =>
 			{
 				if (ActiveRadio != null)
 				{
 					ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Regular);
 					ActiveRadio.StopRecording();
-					_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
+					//m_TrayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 				}
 			};
-			_recordingStop.Enabled = false;				
+			m_RecordingStop.Enabled = false;				
 			contextMenuStrip.Items.Add("-");
-			_checkForUpdate = contextMenuStrip.Items.Add("Check for updates");
-			_checkForUpdate.Click += (object sender, EventArgs args) =>
+			m_CheckForUpdate = contextMenuStrip.Items.Add("Check for updates");
+			m_CheckForUpdate.Click += (object sender, EventArgs args) =>
 			{
-				_checkForUpdate.Enabled = false;
-				_updater.CheckForUpdate(sender);
+				m_CheckForUpdate.Enabled = false;
+				m_Updater.CheckForUpdate(sender);
 			};
 			item = contextMenuStrip.Items.Add("Preferences");
 			item.Image = IconPreferences.ToBitmap();
 			item.Click += (object sender, EventArgs args) =>    
 			{
-				if (_preferencesWnd == null)
+				if (m_PreferencesWnd == null)
 				{
-					_preferencesWnd = new PreferencesWindow();
-					_preferencesWnd.Closed += (object sender2, EventArgs args2) => { _preferencesWnd = null; };
-					_preferencesWnd.ShowDialog();
+					m_PreferencesWnd = new PreferencesWindow();
+					m_PreferencesWnd.Closed += (object sender2, EventArgs args2) => { m_PreferencesWnd = null; };
+					m_PreferencesWnd.ShowDialog();
 				}
 				else
-					_preferencesWnd.Focus();
+					m_PreferencesWnd.Focus();
 			};
 			contextMenuStrip.Items.Add("-");
 			item = contextMenuStrip.Items.Add("About");
@@ -155,14 +157,14 @@ namespace TrayRadio
 
 		protected override void OnExit(ExitEventArgs e)
 		{
-			if (_isInitialised)
+			if (m_IsInitialised)
 			{
 				ActiveRadio?.Stop();
 				Bass.BASS_Free();
-				_cts.Cancel();
-				_trayIcon.Dispose();
+				m_Cts.Cancel();
+				m_TrayIcon.Dispose();
 				if (!Debugger.IsAttached)
-					_mutex.ReleaseMutex();
+					m_Mutex.ReleaseMutex();
 			}
 			TrayRadio.Properties.Settings.Default.Save();
 			base.OnExit(e);
@@ -170,40 +172,40 @@ namespace TrayRadio
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
-			_mutex = new Mutex(false, Current.ToString());
-			if (_mutex.WaitOne(500, false) || Debugger.IsAttached)
+			m_Mutex = new Mutex(false, Current.ToString());
+			if (m_Mutex.WaitOne(500, false) || Debugger.IsAttached)
 			{
-				if ((_isInitialised = Bass.BASS_Init(TrayRadio.Properties.Settings.Default.BassPlayDevice, TrayRadio.Properties.Settings.Default.BassPlayFrequency,
+				if ((m_IsInitialised = Bass.BASS_Init(TrayRadio.Properties.Settings.Default.BassPlayDevice, TrayRadio.Properties.Settings.Default.BassPlayFrequency,
 					BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero)))
 				{
-					_trayIcon = new NotifyIcon();
-					_trayIcon.BalloonTipClicked += (object sender, EventArgs args) =>
+					m_TrayIcon = new NotifyIcon();
+					m_TrayIcon.BalloonTipClicked += (object sender, EventArgs args) =>
 					{
 						NotifyIcon ni = sender as NotifyIcon;
 						if ((ni != null) && (ni.BalloonTipText.StartsWith("New version of")))
 							if (System.Windows.MessageBox.Show("Do you wish to download a new version?", "Tray Radio Updater", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-								System.Diagnostics.Process.Start(_updater.UpdateInfo.UpdateLink);
+								System.Diagnostics.Process.Start(m_Updater.UpdateInfo.UpdateLink);
 					};
-					_trayIcon.MouseClick += (object sender, System.Windows.Forms.MouseEventArgs args) =>
+					m_TrayIcon.MouseClick += (object sender, System.Windows.Forms.MouseEventArgs args) =>
 					{
 						if (args.Button == MouseButtons.Left)
 						{
-							if (_balanceVolumeWnd == null)
+							if (m_BalanceVolumeWnd == null)
 							{
-								_balanceVolumeWnd = new BalanceVolumeWindow();
-								_balanceVolumeWnd.Closed += (object sender2, EventArgs args2) => { _balanceVolumeWnd = null; };
-								_balanceVolumeWnd.Show();
+								m_BalanceVolumeWnd = new BalanceVolumeWindow();
+								m_BalanceVolumeWnd.Closed += (object sender2, EventArgs args2) => { m_BalanceVolumeWnd = null; };
+								m_BalanceVolumeWnd.Show();
 							}
-							else if (_balanceVolumeWnd.IsVisible)
-								_balanceVolumeWnd.Hide();
+							else if (m_BalanceVolumeWnd.IsVisible)
+								m_BalanceVolumeWnd.Hide();
 							else
-								_balanceVolumeWnd.Show();
+								m_BalanceVolumeWnd.Show();
 						}
 					};
-					_trayIcon.Icon = IconAntennaNoSignal;
-					_trayIcon.Text = TrayRadio.Properties.Resources.TrayRadio;
-					_trayIcon.Visible = true;
-					_trayIcon.ContextMenuStrip = CreateRadioMenuStrip();
+					m_TrayIcon.Icon = IconAntennaNoSignal;
+					m_TrayIcon.Text = TrayRadio.Properties.Resources.TrayRadio;
+					m_TrayIcon.Visible = true;
+					m_TrayIcon.ContextMenuStrip = CreateRadioMenuStrip();
 					Task.Factory.StartNew(() =>
 					{
 						do
@@ -214,83 +216,84 @@ namespace TrayRadio
 								switch (status)
 								{
 									case BASSActive.BASS_ACTIVE_PLAYING:
-										if (ActiveRadio.IsNewSong || (status != _radioStatus))
+										if (ActiveRadio.IsNewSong || (status != m_RadioStatus))
 										{
 											Dispatcher.Invoke(new Action(() =>
 											{
-												_trayIcon.ContextMenuStrip.Items[0].Enabled = true;
+												m_TrayIcon.ContextMenuStrip.Items[0].Enabled = true;
 												ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Bold);
 											}));
 											string text = string.Format("{0} - {1}", TrayRadio.Properties.Resources.TrayRadio, ActiveRadio.Name);
-											_trayIcon.Text = text.Length >= 60 ? text.Substring(0, 60) + "..." : text;
-											_trayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
+											m_TrayIcon.Text = text.Length >= 60 ? text.Substring(0, 60) + "..." : text;
+											m_TrayIcon.Icon = ActiveRadio.IsRecording ? IconAntennaSignalRecording : IconAntennaSignal;
 											bool wasRecorrding = ActiveRadio.IsRecording;
-											ActiveRadio.StopRecording();
-											App.Current.Dispatcher.Invoke(new Action(() => { _songsHistoryWnd.Add(ActiveRadio); }));											
+											if (wasRecorrding)
+												ActiveRadio.StopRecording();
+											App.Current.Dispatcher.Invoke(new Action(() => { m_SongsHistoryWnd.Add(ActiveRadio); }));											
 											ShowBallonTip(string.Format("{0} - Playing\n\n{1}", ActiveRadio.Name, ActiveRadio.Info.Title), ToolTipIcon.Info);
 											if (wasRecorrding)
 												ActiveRadio.StartRecording();
 										}
 										break;
 									case BASSActive.BASS_ACTIVE_STALLED:
-										if (status != _radioStatus)
+										if (status != m_RadioStatus)
 										{
-                                            _trayIcon.Icon = IconAntennaSignalStalled;
+                                            m_TrayIcon.Icon = IconAntennaSignalStalled;
 											ShowBallonTip(string.Format("{0} - Stalled", ActiveRadio.Name), ToolTipIcon.Warning);
 										}
 										break;
 									default:
-                                        if (_radioStatus != status)
+                                        if (m_RadioStatus != status)
                                         {
                                             Dispatcher.Invoke(new Action(() =>
 											{
 												ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Regular);
-												_trayIcon.ContextMenuStrip.Items[0].Enabled = false;
+												m_TrayIcon.ContextMenuStrip.Items[0].Enabled = false;
 											}));
-                                            _trayIcon.Icon = IconAntennaNoSignal;
-                                            _trayIcon.Text = TrayRadio.Properties.Resources.TrayRadio;
-                                            if (status != _radioStatus)
+                                            m_TrayIcon.Icon = IconAntennaNoSignal;
+                                            m_TrayIcon.Text = TrayRadio.Properties.Resources.TrayRadio;
+                                            if (status != m_RadioStatus)
                                                 ShowBallonTip(string.Format("{0} - Stopped", ActiveRadio.Name), ToolTipIcon.Info);
                                         }
 										break; 
 								}
-								_radioStatus = status;
+								m_RadioStatus = status;
 							}
 							Thread.Sleep(100);
-						} while (!_cts.IsCancellationRequested);
+						} while (!m_Cts.IsCancellationRequested);
 					});
 					// Songs history...
-					_songsHistoryWnd = new SongsHistoryWindow();
+					m_SongsHistoryWnd = new SongsHistoryWindow();
 					// Autoplay...
 					if (TrayRadio.Properties.Settings.Default.AutoplayRadio && !string.IsNullOrEmpty(TrayRadio.Properties.Settings.Default.AutoplayRadioName))
 						(ActiveRadio = TrayRadio.Properties.Settings.Default.Radios[TrayRadio.Properties.Settings.Default.AutoplayRadioName]).Play();
 					// Updater...
-					_updater = new Updater.Updater();
-					_updater.UpdateInterval = TrayRadio.Properties.Settings.Default.UpdateCheckInterval;
-					_updater.OnCheckForUpdate += (object sender, CheckForUpdateEventArgs args) =>
+					m_Updater = new Updater.Updater();
+					m_Updater.UpdateInterval = TrayRadio.Properties.Settings.Default.UpdateCheckInterval;
+					m_Updater.OnCheckForUpdate += (object sender, CheckForUpdateEventArgs args) =>
 					{
 						if (args.IsNewAvailable)
-							ShowBallonTip(string.Format("New version of {0} {1} is available.", _updater.UpdateInfo.Name, _updater.UpdateInfo.Version), ToolTipIcon.Info);
+							ShowBallonTip(string.Format("New version of {0} {1} is available.", m_Updater.UpdateInfo.Name, m_Updater.UpdateInfo.Version), ToolTipIcon.Info);
 						else if (sender is ToolStripItem)
 							System.Windows.MessageBox.Show("Your Tray Radio is up to date.", "Tray Radio Updater", MessageBoxButton.OK, MessageBoxImage.Information);
-						Dispatcher.BeginInvoke(new Action(() => { _checkForUpdate.Enabled = true; }));
+						Dispatcher.BeginInvoke(new Action(() => { m_CheckForUpdate.Enabled = true; }));
 					};
-					_updater.OnCheckForUpdateFailed += (object sender, CheckForUpdateFailedEventArgs args) =>
+					m_Updater.OnCheckForUpdateFailed += (object sender, CheckForUpdateFailedEventArgs args) =>
 					{
 						App.Instance.ShowBallonTip("Can not contact update server.", System.Windows.Forms.ToolTipIcon.Warning);
-						Dispatcher.BeginInvoke(new Action(() => { _checkForUpdate.Enabled = true; }));
+						Dispatcher.BeginInvoke(new Action(() => { m_CheckForUpdate.Enabled = true; }));
 					};
-					_updater.Enable = TrayRadio.Properties.Settings.Default.EnableUpdates;
+					m_Updater.Enable = TrayRadio.Properties.Settings.Default.EnableUpdates;
 					// Check for new update now...
-					_checkForUpdate.Enabled = false;
-					_updater.CheckForUpdate(this);
+					m_CheckForUpdate.Enabled = false;
+					m_Updater.CheckForUpdate(this);
 					// Create an keyboard hook...
-					_keyboardHook = new KeyboardHook();
-					_keyboardHook.KeyPressed += (object sender, KeyPressedEventArgs e2) =>
+					m_KeyboardHook = new KeyboardHook();
+					m_KeyboardHook.KeyPressed += (object sender, KeyPressedEventArgs e2) =>
 					{
 						(new HotKeyWindow()).ShowDialog();
 					};
-					_keyboardHook.RegisterHotKey(ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift, Keys.T); // Default hotkey.
+					m_KeyboardHook.RegisterHotKey(ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift, Keys.T); // Default hotkey.
 					base.OnStartup(e);
 				}
 				else
@@ -312,9 +315,23 @@ namespace TrayRadio
 			ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Bold);
 		}
 
+		private void RadioAfterStartRecording(object sender, EventArgs e)
+		{
+			m_TrayIcon.Icon = IconAntennaSignalRecording;
+			m_RecordingStart.Enabled = false;
+			m_RecordingStop.Enabled = true;
+		}
+
 		private void RadioAfterStop(object sender, EventArgs e)
 		{
 			ActiveRadio.MenuStripItem.Font = new Font(ActiveRadio.MenuStripItem.Font, System.Drawing.FontStyle.Regular);
+		}
+
+		private void RadioAfterStopRecording(object sender, EventArgs e)
+		{
+			m_TrayIcon.Icon = ActiveRadio.IsActive ? IconAntennaSignal : IconAntennaNoSignal;
+			m_RecordingStart.Enabled = true;
+			m_RecordingStop.Enabled = false;
 		}
 
 		private void RadioBeforePlay(object sender, EventArgs args)
@@ -325,10 +342,10 @@ namespace TrayRadio
 
 		public void ShowBallonTip(string message, ToolTipIcon icon = ToolTipIcon.Error)
 		{
-			_trayIcon.BalloonTipIcon = icon;
-			_trayIcon.BalloonTipText = message;
-			_trayIcon.BalloonTipTitle = TrayRadio.Properties.Resources.TrayRadio;
-			_trayIcon.ShowBalloonTip(100);
+			m_TrayIcon.BalloonTipIcon = icon;
+			m_TrayIcon.BalloonTipText = message;
+			m_TrayIcon.BalloonTipTitle = TrayRadio.Properties.Resources.TrayRadio;
+			m_TrayIcon.ShowBalloonTip(100);
 		}
 		
 		#endregion
@@ -358,13 +375,13 @@ namespace TrayRadio
 				{
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
 						foreach (RadioEntry item in e.NewItems)
-							_trayIcon.ContextMenuStrip.Items.Insert(TrayRadio.Properties.Settings.Default.Radios.Count, item.MenuStripItem);
-						if (!(_trayIcon.ContextMenuStrip.Items[1] is ToolStripSeparator/*.Text.CompareTo("-") != 0*/))
-							_trayIcon.ContextMenuStrip.Items.Insert(1, new ToolStripSeparator());
+							m_TrayIcon.ContextMenuStrip.Items.Insert(TrayRadio.Properties.Settings.Default.Radios.Count, item.MenuStripItem);
+						if (!(m_TrayIcon.ContextMenuStrip.Items[1] is ToolStripSeparator/*.Text.CompareTo("-") != 0*/))
+							m_TrayIcon.ContextMenuStrip.Items.Insert(1, new ToolStripSeparator());
 						break;
 					case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
 						RadioEntry radio = e.OldItems[0] as RadioEntry;
-						_trayIcon.ContextMenuStrip.Items.Remove(radio.MenuStripItem);
+						m_TrayIcon.ContextMenuStrip.Items.Remove(radio.MenuStripItem);
 						if (ActiveRadio?.Name.CompareTo(radio.Name) == 0)
 							if (ActiveRadio.IsActive)
 							{
@@ -372,7 +389,7 @@ namespace TrayRadio
 								ActiveRadio = null;
 							}
 						if (TrayRadio.Properties.Settings.Default.Radios.Count == 0)
-							_trayIcon.ContextMenuStrip.Items.RemoveAt(1);
+							m_TrayIcon.ContextMenuStrip.Items.RemoveAt(1);
 						break;
 				}
 			};
@@ -395,14 +412,14 @@ namespace TrayRadio
 							ActiveRadio.Balance = TrayRadio.Properties.Settings.Default.Balance;
 						break;
 					case "EnableUpdates":
-						_updater.Enable = TrayRadio.Properties.Settings.Default.EnableUpdates;
+						m_Updater.Enable = TrayRadio.Properties.Settings.Default.EnableUpdates;
 						break;
 					case "Mute":
 						if (ActiveRadio != null)
 							ActiveRadio.Mute = TrayRadio.Properties.Settings.Default.Mute;
 						break;
 					case "UpdateCheckInterval":
-						_updater.UpdateInterval = TrayRadio.Properties.Settings.Default.UpdateCheckInterval;
+						m_Updater.UpdateInterval = TrayRadio.Properties.Settings.Default.UpdateCheckInterval;
 						break;
 					case "Volume":
 						if (ActiveRadio != null)

@@ -15,7 +15,7 @@ namespace TrayRadio
 	{
 		#region Fields
 
-		private string _message;
+		private string m_Message;
 
 		#endregion
 
@@ -33,11 +33,11 @@ namespace TrayRadio
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(_message))
+				if (string.IsNullOrEmpty(m_Message))
 					return string.Format(DefaultErrorMessage, From, To);
-				return _message;
+				return m_Message;
 			}
-			set { _message = value; }
+			set { m_Message = value; }
 		}
 
 		public int To { get; set; }

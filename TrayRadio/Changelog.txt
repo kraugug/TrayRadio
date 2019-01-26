@@ -1,10 +1,15 @@
 Tray Radio - Simple Internet Radio Player
 
-Version: 1.6.0.b3
+Version: 1.6.0.b4
 Author: Michal Heczko
 Contact: micky.heczko@gmail.com
 
 Changes:
+
+[26.01.2019 - 1.6.0.b4]
+  - HotKeyWindow update. Now contains functional controls such Play, Stop, Record, Mute and radio selection.
+    You can now play all radios simultaneously at the moment (probably it will change in future).
+  - Class member variables name changed from "_variable" to "m_Variable".
 
 [25.01.2019 - 1.6.0.b3]
   - Connected with Appveyor.

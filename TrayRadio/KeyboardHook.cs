@@ -12,8 +12,8 @@ namespace TrayRadio
 	{
 		#region Fields
 
-		private HookWindow _hookWindow;
-		private int _currentId;
+		private HookWindow m_HookWindow;
+		private int m_CurrentId;
 
 		#endregion
 
@@ -21,9 +21,9 @@ namespace TrayRadio
 
 		public void Dispose()
 		{
-			for (int i = _currentId; i > 0; i--)
-				UnregisterHotKey(_hookWindow.Handle, i);
-			_hookWindow.Dispose();
+			for (int i = m_CurrentId; i > 0; i--)
+				UnregisterHotKey(m_HookWindow.Handle, i);
+			m_HookWindow.Dispose();
 		}
 
 		[DllImport("Kernel32")]
@@ -36,9 +36,9 @@ namespace TrayRadio
 		public void RegisterHotKey(ModifierKeys modifier, Keys key)
 		{
 			// Increment the counter...
-			_currentId = _currentId + 1;
+			m_CurrentId = m_CurrentId + 1;
 			// Register the hot key...
-			if (!RegisterHotKey(_hookWindow.Handle, _currentId, (uint)modifier, (uint)key))
+			if (!RegisterHotKey(m_HookWindow.Handle, m_CurrentId, (uint)modifier, (uint)key))
 				throw new InvalidOperationException(string.Format("Couldn’t register the hot key ({0}).", GetLastError()));
 		}
 
@@ -52,8 +52,8 @@ namespace TrayRadio
 
 		public KeyboardHook()
 		{
-			_hookWindow = new HookWindow();
-			_hookWindow.KeyPressed += (object sender, KeyPressedEventArgs e) =>
+			m_HookWindow = new HookWindow();
+			m_HookWindow.KeyPressed += (object sender, KeyPressedEventArgs e) =>
 			{
 				KeyPressed?.Invoke(this, e);
 			};

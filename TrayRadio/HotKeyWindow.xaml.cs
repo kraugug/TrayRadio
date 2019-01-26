@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -20,28 +21,51 @@ namespace TrayRadio
 	{
 		#region Fields
 
-		public static readonly DependencyProperty BalanceSliderToolTipProperty = DependencyProperty.Register("BalanceSliderToolTip", typeof(string), typeof(BalanceVolumeWindow), new PropertyMetadata(null));
-		public static readonly DependencyProperty VolumeSliderToolTipProperty = DependencyProperty.Register("VolumeSliderToolTip", typeof(string), typeof(BalanceVolumeWindow), new PropertyMetadata(null));
+		public static readonly RoutedCommand CommandPlay = new RoutedCommand();
+		public static readonly RoutedCommand CommandRecord = new RoutedCommand();
+		public static readonly RoutedCommand CommandStop = new RoutedCommand();
 
 		#endregion
 
-		#region Properties
+		#region Methods
 
-		public string BalanceSliderToolTip
+		private void CommandPlay_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			get { return (string)GetValue(BalanceSliderToolTipProperty); }
-			set { SetValue(BalanceSliderToolTipProperty, value); }
+			e.CanExecute = App.Instance.ActiveRadio != null && !App.Instance.ActiveRadio.IsActive;
 		}
 
-		public string VolumeSliderToolTip
+		private void CommandPlay_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			get { return (string)GetValue(VolumeSliderToolTipProperty); }
-			set { SetValue(VolumeSliderToolTipProperty, value); }
+			App.Instance.ActiveRadio.Play();
 		}
 
-		#endregion
+		private void CommandRecord_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = App.Instance.ActiveRadio != null && App.Instance.ActiveRadio.IsActive;
+		}
 
-		#region Methos
+		private void CommandRecord_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if ((e.OriginalSource as ToggleButton).IsChecked.Value)
+				App.Instance.ActiveRadio.StartRecording();
+			else
+				App.Instance.ActiveRadio.StopRecording();
+		}
+
+		private void CommandStop_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = App.Instance.ActiveRadio != null && App.Instance.ActiveRadio.IsActive;
+		}
+
+		private void CommandStop_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			App.Instance.ActiveRadio.Stop();
+		}
+
+		private void Window_Activated(object sender, EventArgs e)
+		{
+			ComboBoxRadios.Focus();
+		}
 
 		private void Window_Deactivated(object sender, EventArgs e)
 		{

@@ -21,30 +21,30 @@ namespace TrayRadio
 	{
 		#region Fields
 
-		private bool _active;
-		private double _balance;
-		private DOWNLOADPROC _downloadProc;
-		private ShoutcastMetadata _previouseInfo;
-		private bool _isRecording;
-		private bool _mute;
-		private string _name;
-		private RecordFileStream _recordFileStream;
-		private double _volume;
+		private bool m_Active;
+		private double m_Balance;
+		private DOWNLOADPROC m_DownloadProc;
+		private ShoutcastMetadata m_PreviouseInfo;
+		private bool m_IsRecording;
+		private bool m_Mute;
+		private string m_Name;
+		private RecordFileStream m_RecordFileStream;
+		private double m_Volume;
 
 		#endregion
 
 		#region Properties
 
 		[XmlIgnore]
-		public string ActiveRecordingFileName { get { return _recordFileStream?.Name; } }
+		public string ActiveRecordingFileName { get { return m_RecordFileStream?.Name; } }
 
 		internal double Balance
 		{
-			get { return _balance; }
+			get { return m_Balance; }
 			set
 			{
-				_balance = value;
-				SetBalance(_balance);
+				m_Balance = value;
+				SetBalance(m_Balance);
 			}
 		}
 
@@ -56,11 +56,11 @@ namespace TrayRadio
 
 		internal bool IsActive
 		{
-			get { return _active; }
+			get { return m_Active; }
 			private set
 			{
-				_active = value;
-				MenuStripItem.Font = new System.Drawing.Font(MenuStripItem.Font, _active ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular);
+				m_Active = value;
+				MenuStripItem.Font = new System.Drawing.Font(MenuStripItem.Font, m_Active ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular);
 			}
 		}
 
@@ -70,16 +70,16 @@ namespace TrayRadio
 			{
 				ShoutcastMetadata info = Info;
 
-				if ((_previouseInfo == null && info == null) || (_previouseInfo != null && info == null))
+				if ((m_PreviouseInfo == null && info == null) || (m_PreviouseInfo != null && info == null))
 					return false;
-				if (_previouseInfo == null && info != null)
+				if (m_PreviouseInfo == null && info != null)
 				{
-					_previouseInfo = info;
+					m_PreviouseInfo = info;
 					return true;
 				}
-				if (_previouseInfo.Title.Equals(info.Title))
+				if (m_PreviouseInfo.Title.Equals(info.Title))
 					return false;
-				_previouseInfo = info;
+				m_PreviouseInfo = info;
 				return true;
 			}
 		}
@@ -87,10 +87,10 @@ namespace TrayRadio
         [XmlIgnore]
 		public bool IsRecording
 		{
-			get { return _isRecording; }
+			get { return m_IsRecording; }
 			private set
 			{
-				_isRecording = value;
+				m_IsRecording = value;
 				FirePropertyChangedEvent(nameof(IsRecording));
 			}
 		}
@@ -99,21 +99,21 @@ namespace TrayRadio
 
 		internal bool Mute
 		{
-			get { return _mute; }
+			get { return m_Mute; }
 			set
 			{
-				_mute = value;
-				SetVolume(_mute ? 0 : Properties.Settings.Default.Volume);
+				m_Mute = value;
+				SetVolume(m_Mute ? 0 : Properties.Settings.Default.Volume);
 			}
 		}
 
 		public string Name
 		{
-			get { return _name; }
+			get { return m_Name; }
 			set
 			{
-				_name = value;
-				MenuStripItem.Text = _name;
+				m_Name = value;
+				MenuStripItem.Text = m_Name;
 			}
 		}
 
@@ -129,12 +129,12 @@ namespace TrayRadio
 
 		internal double Volume
 		{
-			get { return _volume; }
+			get { return m_Volume; }
 			set
 			{
-				_volume = value;
-				if (!_mute)
-					SetVolume(_volume);
+				m_Volume = value;
+				if (!m_Mute)
+					SetVolume(m_Volume);
 			}
 		}
 
@@ -146,13 +146,14 @@ namespace TrayRadio
 
 		private void DownloadProc(IntPtr buffer, int length, IntPtr user)
 		{
-			if (_recordFileStream != null)
+			if (m_RecordFileStream != null)
 			{
 				if ((buffer != null) && (buffer != IntPtr.Zero) && (Status == BASSActive.BASS_ACTIVE_PLAYING))
 				{
 					byte[] data = new byte[length];
 					Marshal.Copy(buffer, data, 0, length);
-					_recordFileStream.Write(data, 0, data.Length);
+					if (data != null && data.Length > 0)
+						m_RecordFileStream.Write(data, 0, data.Length);
 				}
 			}
 		}
@@ -165,7 +166,7 @@ namespace TrayRadio
 		public void Play()
 		{
 			OnBeforePlay?.Invoke(this, EventArgs.Empty);
-			ChannelHandle = Bass.BASS_StreamCreateURL(Url, 0, BASSFlag.BASS_DEFAULT, _downloadProc, IntPtr.Zero);
+			ChannelHandle = Bass.BASS_StreamCreateURL(Url, 0, BASSFlag.BASS_DEFAULT, m_DownloadProc, IntPtr.Zero);
 			if (ChannelHandle != 0)
 			{
 				if (!(IsActive = Bass.BASS_ChannelPlay(ChannelHandle, false)))
@@ -192,10 +193,10 @@ namespace TrayRadio
 			foreach (char ch in System.IO.Path.GetInvalidFileNameChars())
 				if ((ch != '\\') && (ch != ':'))
 					fileToSave = fileToSave.Replace(ch, '-');
-			_recordFileStream = new RecordFileStream(fileToSave, FileMode.Create);
-			if (_recordFileStream != null)
+			m_RecordFileStream = new RecordFileStream(fileToSave, FileMode.Create);
+			if (m_RecordFileStream != null)
 			{
-				_recordFileStream.ParseInfo(App.Instance.ActiveRadio.Info.Title);
+				m_RecordFileStream.ParseInfo(App.Instance.ActiveRadio.Info.Title);
                 IsRecording = true;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
 			}
@@ -208,10 +209,10 @@ namespace TrayRadio
 			if (IsRecording)
 			{
 				IsRecording = false;
-				_recordFileStream.Flush();
-				_recordFileStream.Close();
-				_recordFileStream.Dispose();
-				_recordFileStream = null;
+				m_RecordFileStream.Flush();
+				m_RecordFileStream.Close();
+				m_RecordFileStream.Dispose();
+				m_RecordFileStream = null;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
             }
             OnAfterStopRecording?.Invoke(this, EventArgs.Empty);
@@ -253,7 +254,7 @@ namespace TrayRadio
 			ChannelHandle = 0;
 			MenuStripItem = new ToolStripMenuItem();
 			MenuStripItem.Click += (object sender, EventArgs args) => { Play(); };
-			_downloadProc = new DOWNLOADPROC(DownloadProc);
+			m_DownloadProc = new DOWNLOADPROC(DownloadProc);
 		}
 
 		public RadioEntry(string name, string url) : this()
