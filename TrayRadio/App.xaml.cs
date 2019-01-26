@@ -129,14 +129,7 @@ namespace TrayRadio
 			item.Image = IconPreferences.ToBitmap();
 			item.Click += (object sender, EventArgs args) =>    
 			{
-				if (m_PreferencesWnd == null)
-				{
-					m_PreferencesWnd = new PreferencesWindow();
-					m_PreferencesWnd.Closed += (object sender2, EventArgs args2) => { m_PreferencesWnd = null; };
-					m_PreferencesWnd.ShowDialog();
-				}
-				else
-					m_PreferencesWnd.Focus();
+				ShowPreferences();
 			};
 			contextMenuStrip.Items.Add("-");
 			item = contextMenuStrip.Items.Add("About");
@@ -346,6 +339,18 @@ namespace TrayRadio
 			m_TrayIcon.BalloonTipText = message;
 			m_TrayIcon.BalloonTipTitle = TrayRadio.Properties.Resources.TrayRadio;
 			m_TrayIcon.ShowBalloonTip(100);
+		}
+
+		public void ShowPreferences()
+		{
+			if (m_PreferencesWnd == null)
+			{
+				m_PreferencesWnd = new PreferencesWindow();
+				m_PreferencesWnd.Closed += (object sender2, EventArgs args2) => { m_PreferencesWnd = null; };
+				m_PreferencesWnd.ShowDialog();
+			}
+			else
+				m_PreferencesWnd.Focus();
 		}
 		
 		#endregion

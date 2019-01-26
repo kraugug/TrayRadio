@@ -193,7 +193,7 @@ namespace TrayRadio
 			foreach (char ch in System.IO.Path.GetInvalidFileNameChars())
 				if ((ch != '\\') && (ch != ':'))
 					fileToSave = fileToSave.Replace(ch, '-');
-			m_RecordFileStream = new RecordFileStream(fileToSave, FileMode.Create);
+			m_RecordFileStream = new RecordFileStream(fileToSave, FileMode.Create, this);
 			if (m_RecordFileStream != null)
 			{
 				m_RecordFileStream.ParseInfo(App.Instance.ActiveRadio.Info.Title);
@@ -211,7 +211,7 @@ namespace TrayRadio
 				IsRecording = false;
 				m_RecordFileStream.Flush();
 				m_RecordFileStream.Close();
-				m_RecordFileStream.Dispose();
+				//m_RecordFileStream.Dispose();
 				m_RecordFileStream = null;
                 PreferencesWindow.Instance?.RefreshRecordingsList();
             }

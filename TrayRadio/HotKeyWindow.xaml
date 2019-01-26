@@ -19,6 +19,7 @@
         mc:Ignorable="d">
 	<Window.CommandBindings>
 		<CommandBinding CanExecute="CommandPlay_CanExecute" Command="local:HotKeyWindow.CommandPlay" Executed="CommandPlay_Executed" />
+		<CommandBinding Command="local:HotKeyWindow.CommandPreferences" Executed="CommandPreferences_Executed" />
 		<CommandBinding CanExecute="CommandRecord_CanExecute" Command="local:HotKeyWindow.CommandRecord" Executed="CommandRecord_Executed" />
 		<CommandBinding CanExecute="CommandStop_CanExecute" Command="local:HotKeyWindow.CommandStop" Executed="CommandStop_Executed" />
 	</Window.CommandBindings>
@@ -65,7 +66,8 @@
 					              ToolTip="Record">
 						<Image Source="Resources/Record.png" Style="{StaticResource ToolButtonImageStyle}" />
 					</ToggleButton>
-					<ToggleButton Name="ToogleButtonMute" Width="24" Height="24" Focusable="False"
+					<ToggleButton Name="ToogleButtonMute" Width="24" Height="24" Margin="0,0,3,0"
+					              Focusable="False"
 					              IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Mute}"
 					              ToolTip="Mute">
 						<Image>
@@ -83,6 +85,10 @@
 							</Image.Style>
 						</Image>
 					</ToggleButton>
+					<Button Width="24" Height="24" Command="local:HotKeyWindow.CommandPreferences"
+					        Focusable="False" ToolTip="Preferences">
+						<Image Source="Resources/Preferences.png" Style="{StaticResource ToolButtonImageStyle}" />
+					</Button>
 				</StackPanel>
 			</Grid>
 		</Grid>

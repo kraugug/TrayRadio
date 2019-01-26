@@ -116,6 +116,7 @@
     <Compile Include="HotKeyWindow.xaml.cs">
       <DependentUpon>HotKeyWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Id3v1Tag.cs" />
     <Compile Include="IntRangeValidationRule.cs" />
     <Compile Include="KeyboardHook.cs" />
     <Compile Include="KeyPressedEventArgs.cs" />

@@ -7,6 +7,8 @@ Contact: micky.heczko@gmail.com
 Changes:
 
 [26.01.2019 - 1.6.0.b4]
+  - Added ID3v1 tagging, easy to implement, but not sufficient due to string length limit to 30 characters. Future plan is ID3v2.
+  - Added preferences button to HotKeyWindow.
   - HotKeyWindow update. Now contains functional controls such Play, Stop, Record, Mute and radio selection.
     You can now play all radios simultaneously at the moment (probably it will change in future).
   - Class member variables name changed from "_variable" to "m_Variable".

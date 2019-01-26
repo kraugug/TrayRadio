@@ -22,6 +22,7 @@ namespace TrayRadio
 		#region Fields
 
 		public static readonly RoutedCommand CommandPlay = new RoutedCommand();
+		public static readonly RoutedCommand CommandPreferences = new RoutedCommand();
 		public static readonly RoutedCommand CommandRecord = new RoutedCommand();
 		public static readonly RoutedCommand CommandStop = new RoutedCommand();
 
@@ -37,6 +38,11 @@ namespace TrayRadio
 		private void CommandPlay_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			App.Instance.ActiveRadio.Play();
+		}
+
+		private void CommandPreferences_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			App.Instance?.ShowPreferences();
 		}
 
 		private void CommandRecord_CanExecute(object sender, CanExecuteRoutedEventArgs e)
