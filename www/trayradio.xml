@@ -1,11 +1,17 @@
 <UpdateInfo>
 	<Name>Tray Radio</Name>
-	<Version>1.5.2</Version>
-	<ReleaseDate>17.10.2017</ReleaseDate>
-	<UpdateLink>http://trayradio.kraugug.net/Tray%20Radio%201.5.2.exe</UpdateLink>
+	<Version>1.6.0</Version>
+	<ReleaseDate>25.01.2019</ReleaseDate>
+	<UpdateLink>http://trayradio.kraugug.net/Tray%20Radio%201.6.0.exe</UpdateLink>
 	<Changes>
-		- Moved to http://trayradio.kraugug.net
-		- Changed update site in configuration.
-		- Fixed bug in updater if site is not reachable. Now application will not crash.
+		- Connected with Appveyor.
+  		- Removed unused NuGet packages.
+		- Added new RecordFileStream class. This is for future ID3 tagging support.
+		- Changed default records base folder from application location to Environment.SpecialFolder.CommonApplicationData,
+		  which means "C:\ProgramData" on Windows 7/8/10 and "C:\Documents and Settings\All Users\Application Data" on Windows XP.
+		- Added own SearchDirectory function in case of UnauthorizedAccessException.
+		- Show recording icons fix.
+		- Recording file now opens with mode FileMode.Create instead of FileMode.CreateNew.
+		- Added new buttons to change folder for records to default value and for opening it.
 	</Changes>
 </UpdateInfo>
