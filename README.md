@@ -8,7 +8,7 @@ Simple internet radio player for Windows inspired by Linux [RadioTray](http://ra
 
 # Changelog
 
-- [https://github.com/kraugug/TrayRadio/blob/master/TrayRadio/Changelog.txt](https://github.com/kraugug/TrayRadio/blob/master/TrayRadio/Changelog.txt)
+- [Changelog](https://github.com/kraugug/TrayRadio/blob/master/TrayRadio/Changelog.txt)
 
 # Project Status
 
