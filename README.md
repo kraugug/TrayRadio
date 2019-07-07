@@ -1,6 +1,6 @@
 <p align="center"><img width="256" height="256" src="https://github.com/kraugug/TrayRadio/blob/master/www/images/antenna.png" align="center"/></p>
 
-# TrayRadio 1.6.0.b4
+# TrayRadio 1.6.0
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nu8h8589in0m8qa8/branch/master?svg=true)](https://ci.appveyor.com/project/kraugug/trayradio/branch/master) [![BSD 3-Clause License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/kraugug/TrayRadio/blob/master/LICENSE)
 
