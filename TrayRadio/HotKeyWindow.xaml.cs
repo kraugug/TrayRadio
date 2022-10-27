@@ -77,7 +77,7 @@ namespace TrayRadio
 
 		private void Window_Deactivated(object sender, EventArgs e)
 		{
-			//Close();
+			(sender as HotKeyWindow)?.Hide();
 		}
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -106,11 +106,16 @@ namespace TrayRadio
 			CommandManager.InvalidateRequerySuggested();
 		}
 
-		#endregion
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
+        {
+			Close();
+        }
 
-		#region Constructor
+        #endregion	
 
-		public HotKeyWindow()
+        #region Constructor
+
+        public HotKeyWindow()
 		{
 			DataContext = this;
 			InitializeComponent();

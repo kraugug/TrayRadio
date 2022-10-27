@@ -10,6 +10,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         Deactivated="Window_Deactivated"
+        LostFocus="Window_LostFocus"
         KeyDown="Window_KeyDown"
         ShowInTaskbar="False"
         SizeToContent="WidthAndHeight"
