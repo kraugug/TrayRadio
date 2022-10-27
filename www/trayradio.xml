@@ -1,20 +1,12 @@
 <UpdateInfo>
 	<Name>Tray Radio</Name>
-	<Version>1.6.0</Version>
-	<ReleaseDate>26.01.2019</ReleaseDate>
+	<Version>1.7.0</Version>
+	<ReleaseDate>27.10.2022</ReleaseDate>
 	<UpdateLink>http://trayradio.kraugug.net/Tray%20Radio%201.6.0.exe</UpdateLink>
 	<Changes>
-		- Added ID3v1 tagging, easy to implement, but not sufficient due to string length limit to 30 characters. Future plan is ID3v2.
-		- Added preferences button to HotKeyWindow.
-		- HotKeyWindow update. Now contains functional controls such Play, Stop, Record, Mute and radio selection. You can now play all radios simultaneously at the moment (probably it will change in future).
-		- Class member variables name changed from "_variable" to "m_Variable".
-		- Connected with Appveyor.
-		- Removed unused NuGet packages.
-		- Added new RecordFileStream class. This is for future ID3 tagging support.
-		- Changed default records base folder from application location to Environment.SpecialFolder.CommonApplicationData, which means "C:\ProgramData" on Windows 7/8/10 and "C:\Documents and Settings\All Users\Application Data" on Windows XP.
-		- Added own SearchDirectory function in case of UnauthorizedAccessException.
-		- Show recording icons fix.
-		- Recording file now opens with mode FileMode.Create instead of FileMode.CreateNew.
-		- Added new buttons to change folder for records to default value and for opening it.
+		- Added functionality: Follow default audio sound device (restart needed). Available in Preferences Window with new setting (default: True).
+		- HotKeyWindow: Added shortcuts for buttons for easier use for keybord users. Removed radio list. Record icon change.
+		- Recorded file has a new format.
+		- Bug-fix: Importing radio list was duplicated in tray icon context menu.
 	</Changes>
 </UpdateInfo>

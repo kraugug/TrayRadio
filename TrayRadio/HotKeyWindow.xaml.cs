@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TrayRadio.Properties;
 
 namespace TrayRadio
 {
@@ -42,7 +43,8 @@ namespace TrayRadio
 
 		private void CommandPreferences_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			App.Instance?.ShowPreferences();
+			App.Instance?.ShowPreferences(() => Close());
+			
 		}
 
 		private void CommandRecord_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -50,9 +52,9 @@ namespace TrayRadio
 			e.CanExecute = App.Instance.ActiveRadio != null && App.Instance.ActiveRadio.IsActive;
 		}
 
-		private void CommandRecord_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void CommandRecord_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			if ((e.OriginalSource as ToggleButton).IsChecked.Value)
+			if (!(e.OriginalSource as ToggleButton).IsChecked.Value)
 				App.Instance.ActiveRadio.StartRecording();
 			else
 				App.Instance.ActiveRadio.StopRecording();
@@ -70,18 +72,38 @@ namespace TrayRadio
 
 		private void Window_Activated(object sender, EventArgs e)
 		{
-			ComboBoxRadios.Focus();
+			//ComboBoxRadios.Focus();
 		}
 
 		private void Window_Deactivated(object sender, EventArgs e)
 		{
-			Close();
+			//Close();
 		}
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Escape)
-				Close();
+            switch (e.Key)
+			{
+				case Key.Escape:
+					Close();
+					break;
+				case Key.M:
+					Settings.Default.Mute = !Properties.Settings.Default.Mute;
+                    break;
+				case Key.O:
+					CommandPreferences.Execute(null, null);
+					break;
+				case Key.P:
+					CommandPlay.Execute(null, null);
+                    break;
+                case Key.R:
+                    CommandRecord.Execute(null, ToogleButtonRecord);
+                    break;
+                case Key.S:
+                    CommandStop.Execute(null, null);
+                    break;
+            }
+			CommandManager.InvalidateRequerySuggested();
 		}
 
 		#endregion

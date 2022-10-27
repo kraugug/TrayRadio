@@ -48,9 +48,9 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
-				<ComboBox Name="ComboBoxRadios" Grid.Column="0" Width="200" DisplayMemberPath="Name"
+				<!--<ComboBox Name="ComboBoxRadios" Grid.Column="0" Width="200" DisplayMemberPath="Name"
 				          ItemsSource="{Binding Source={x:Static prop:Settings.Default}, Path=Radios}"
-				          SelectedItem="{Binding Source={x:Static local:App.Instance}, Path=ActiveRadio}" />
+				          SelectedItem="{Binding Source={x:Static local:App.Instance}, Path=ActiveRadio}" />-->
 				<StackPanel Grid.Column="1" Margin="3,0,0,0" Orientation="Horizontal">
 					<Button Width="24" Height="24" Margin="0,0,3,0" Command="local:HotKeyWindow.CommandPlay"
 					        Focusable="False" ToolTip="Play">
@@ -60,24 +60,39 @@
 					        Focusable="False" ToolTip="Stop">
 						<Image Source="Resources/Stop.png" Style="{StaticResource ToolButtonImageStyle}" />
 					</Button>
-					<ToggleButton Width="24" Height="24" Margin="0,0,3,0"
-					              Command="local:HotKeyWindow.CommandRecord" Focusable="False"
-					              IsChecked="{Binding Source={x:Static local:App.Instance}, Path=ActiveRadio.IsRecording, Mode=OneWay}"
-					              ToolTip="Record">
-						<Image Source="Resources/Record.png" Style="{StaticResource ToolButtonImageStyle}" />
-					</ToggleButton>
+                    <ToggleButton Width="24" Height="24" Margin="0,0,3,0" Command="local:HotKeyWindow.CommandRecord" Focusable="False" Name="ToogleButtonRecord" IsChecked="{Binding Source={x:Static local:App.Instance}, Path=ActiveRadio.IsRecording, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Record">
+						<!--<Image Source="Resources/Record.png" Style="{StaticResource ToolButtonImageStyle}" />-->
+                        <Image>
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Opacity" Value="0.2" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=ToogleButtonRecord, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="Source" Value="/Resources/NoRecord.png" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=ToogleButtonRecord, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="Source" Value="/Resources/Record.png" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Opacity" Value="1.0" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ToggleButton>
 					<ToggleButton Name="ToogleButtonMute" Width="24" Height="24" Margin="0,0,3,0"
 					              Focusable="False"
-					              IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Mute}"
+					              IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Mute, UpdateSourceTrigger=PropertyChanged}"
 					              ToolTip="Mute">
 						<Image>
 							<Image.Style>
 								<Style TargetType="Image">
 									<Style.Triggers>
-										<DataTrigger Binding="{Binding ElementName=ToogleButtonMute, Path=IsChecked}" Value="False">
+                                        <DataTrigger Binding="{Binding ElementName=ToogleButtonMute, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}" Value="False">
 											<Setter Property="Source" Value="/Resources/MuteOff.png" />
 										</DataTrigger>
-										<DataTrigger Binding="{Binding ElementName=ToogleButtonMute, Path=IsChecked}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=ToogleButtonMute, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}" Value="True">
 											<Setter Property="Source" Value="/Resources/MuteOn.png" />
 										</DataTrigger>
 									</Style.Triggers>

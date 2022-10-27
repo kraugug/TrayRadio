@@ -74,11 +74,16 @@ namespace TrayRadio
 			Close();
 		}
 
-		#endregion
-		
-		#region Constructor
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
+        {
+			Close();
+        }
 
-		public AboutWindow()
+        #endregion
+
+        #region Constructor
+
+        public AboutWindow()
 		{
 			InitializeComponent();
 			

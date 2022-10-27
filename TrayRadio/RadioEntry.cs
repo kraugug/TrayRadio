@@ -88,7 +88,7 @@ namespace TrayRadio
 		public bool IsRecording
 		{
 			get { return m_IsRecording; }
-			private set
+			internal set
 			{
 				m_IsRecording = value;
 				FirePropertyChangedEvent(nameof(IsRecording));
@@ -166,7 +166,7 @@ namespace TrayRadio
 		public void Play()
 		{
 			OnBeforePlay?.Invoke(this, EventArgs.Empty);
-			ChannelHandle = Bass.BASS_StreamCreateURL(Url, 0, BASSFlag.BASS_DEFAULT, m_DownloadProc, IntPtr.Zero);
+            ChannelHandle = Bass.BASS_StreamCreateURL(Url, 0, BASSFlag.BASS_DEFAULT, m_DownloadProc, IntPtr.Zero);
 			if (ChannelHandle != 0)
 			{
 				if (!(IsActive = Bass.BASS_ChannelPlay(ChannelHandle, false)))
@@ -180,20 +180,20 @@ namespace TrayRadio
 
 		public void StartRecording()
 		{
-            OnBeforeStartRecording?.Invoke(this, EventArgs.Empty);
-            string radioRecordFolder = Path.Combine(Properties.Settings.Default.RecordsFolder, App.Instance.ActiveRadio.Name);
+			OnBeforeStartRecording?.Invoke(this, EventArgs.Empty);
+			string radioRecordFolder = Path.Combine(Properties.Settings.Default.RecordsFolder, App.Instance.ActiveRadio.Name);
 			if (!Directory.Exists(radioRecordFolder))
 				Directory.CreateDirectory(radioRecordFolder);
-			string fileTitle;
-			if (!string.IsNullOrEmpty(App.Instance.ActiveRadio.Info.Title))
-				fileTitle = App.Instance.ActiveRadio.Info.Title;
+			string fileTitle = null;
+            if (!string.IsNullOrEmpty(App.Instance.ActiveRadio.Info.Title))
+				fileTitle = $"{fileTitle}_{App.Instance.ActiveRadio.Info.Title}";
 			else
-				fileTitle = DateTime.Now.ToString("d/M/yyyy HH/mm/ss");
-			string fileToSave = Path.Combine(radioRecordFolder, string.Format("{0}.mp3", fileTitle));
+                fileTitle = $"{fileTitle}_{App.Instance.ActiveRadio.Name}";
+            string fileToSave = Path.Combine(radioRecordFolder, $"{DateTime.Now.ToString("d-M-yyyy_HH-mm-ss")}{fileTitle}.mp3");
 			foreach (char ch in System.IO.Path.GetInvalidFileNameChars())
 				if ((ch != '\\') && (ch != ':'))
 					fileToSave = fileToSave.Replace(ch, '-');
-			m_RecordFileStream = new RecordFileStream(fileToSave, FileMode.Create, this);
+            m_RecordFileStream = new RecordFileStream(fileToSave, FileMode.Create, this);
 			if (m_RecordFileStream != null)
 			{
 				m_RecordFileStream.ParseInfo(App.Instance.ActiveRadio.Info.Title);

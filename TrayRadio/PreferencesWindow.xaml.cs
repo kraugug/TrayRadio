@@ -163,9 +163,10 @@ namespace TrayRadio
 					XmlSerializer serializer = new XmlSerializer(TrayRadio.Properties.Settings.Default.Radios.GetType());
 					RadioCollection collection = (RadioCollection)serializer.Deserialize(reader);
 					TrayRadio.Properties.Settings.Default.Radios.Clear();
-					foreach (RadioEntry radio in collection)
-						TrayRadio.Properties.Settings.Default.Radios.Add(radio); 
-				}
+                    foreach (RadioEntry radio in collection)
+						Properties.Settings.Default.Radios.Add(radio);
+					App.Instance.UpdateMenuStrip();
+                }
 			}
 		}
 

@@ -63,7 +63,7 @@ namespace TrayRadio
 
 		#region Methods
 		
-		protected ContextMenuStrip CreateRadioMenuStrip()
+		internal ContextMenuStrip CreateRadioMenuStrip()
 		{
 			ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 			contextMenuStrip.Opening += (object sender, CancelEventArgs args) =>
@@ -129,7 +129,7 @@ namespace TrayRadio
 			item.Image = IconPreferences.ToBitmap();
 			item.Click += (object sender, EventArgs args) =>    
 			{
-				ShowPreferences();
+				ShowPreferences(null);
 			};
 			contextMenuStrip.Items.Add("-");
 			item = contextMenuStrip.Items.Add("About");
@@ -168,10 +168,11 @@ namespace TrayRadio
 			m_Mutex = new Mutex(false, Current.ToString());
 			if (m_Mutex.WaitOne(500, false) || Debugger.IsAttached)
 			{
-				if ((m_IsInitialised = Bass.BASS_Init(TrayRadio.Properties.Settings.Default.BassPlayDevice, TrayRadio.Properties.Settings.Default.BassPlayFrequency,
-					BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero)))
+				if (TrayRadio.Properties.Settings.Default.FollowDefaultDevice)
+					Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_DEV_DEFAULT, true);
+                if ((m_IsInitialised = Bass.BASS_Init(TrayRadio.Properties.Settings.Default.BassPlayDevice, TrayRadio.Properties.Settings.Default.BassPlayFrequency, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero)))
 				{
-					m_TrayIcon = new NotifyIcon();
+                    m_TrayIcon = new NotifyIcon();
 					m_TrayIcon.BalloonTipClicked += (object sender, EventArgs args) =>
 					{
 						NotifyIcon ni = sender as NotifyIcon;
@@ -223,7 +224,7 @@ namespace TrayRadio
 											if (wasRecorrding)
 												ActiveRadio.StopRecording();
 											App.Current.Dispatcher.Invoke(new Action(() => { m_SongsHistoryWnd.Add(ActiveRadio); }));											
-											ShowBallonTip(string.Format("{0} - Playing\n\n{1}", ActiveRadio.Name, ActiveRadio.Info.Title), ToolTipIcon.Info);
+											ShowBallonTip(string.Format("{0} - Playing\n\n{1}", ActiveRadio.Name, ActiveRadio.Info == null ? "N/A" : ActiveRadio.Info.Title), ToolTipIcon.Info);
 											if (wasRecorrding)
 												ActiveRadio.StartRecording();
 										}
@@ -341,23 +342,29 @@ namespace TrayRadio
 			m_TrayIcon.ShowBalloonTip(100);
 		}
 
-		public void ShowPreferences()
+		public void ShowPreferences(Action action)
 		{
 			if (m_PreferencesWnd == null)
 			{
 				m_PreferencesWnd = new PreferencesWindow();
 				m_PreferencesWnd.Closed += (object sender2, EventArgs args2) => { m_PreferencesWnd = null; };
-				m_PreferencesWnd.ShowDialog();
+				action?.Invoke();
+                m_PreferencesWnd.ShowDialog();
 			}
 			else
 				m_PreferencesWnd.Focus();
 		}
-		
-		#endregion
 
-		#region Constructor
+		public void UpdateMenuStrip()
+		{
+			m_TrayIcon.ContextMenuStrip = CreateRadioMenuStrip();
+		}
 
-		public App()
+        #endregion
+
+        #region Constructor
+
+        public App()
 		{
 			Instance = this;
 			if (TrayRadio.Properties.Settings.Default.Radios == null)

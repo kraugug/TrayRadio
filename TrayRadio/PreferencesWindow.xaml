@@ -59,35 +59,36 @@
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 					<GroupBox Padding="5" Header="Miscellaneous">
-						<StackPanel Orientation="Vertical">
-							<Grid Margin="0,0,0,10">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="2*"/>
-								</Grid.ColumnDefinitions>
-								<CheckBox Grid.Column="0" VerticalAlignment="Center" Click="CheckBox_Autoplay_Click" Content="Autoplay radio" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}"/>
-								<ComboBox Grid.Column="1" DisplayMemberPath="Name" IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}" ItemsSource="{Binding Source={x:Static prop:Settings.Default}, Path=Radios}" SelectedValue="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadioName}" SelectedValuePath="Name"/>
-							</Grid>
-							<CheckBox Margin="0,0,0,8" Content="Autostart after system boot up" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Autostart}"/>
-							<CheckBox IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}">
-								<CheckBox.Content>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Enable informing about a new updates with check interval of"/>
-										<TextBox Width="40" Height="22" HorizontalContentAlignment="Center" IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}" Style="{StaticResource TextBoxValidationStyle}">
-											<TextBox.Text>
-												<Binding Path="UpdateCheckInterval" Source="{x:Static prop:Settings.Default}" UpdateSourceTrigger="PropertyChanged">
-													<Binding.ValidationRules>
-														<local:IntRangeValidationRule From="1" To="60"/>
-													</Binding.ValidationRules>
-												</Binding>
-											</TextBox.Text>
-										</TextBox>
-										<Label Content="minute(s)"/>
-									</StackPanel>
-								</CheckBox.Content>
-							</CheckBox>
-						</StackPanel>
-					</GroupBox>
+                        <StackPanel Orientation="Vertical">
+                            <Grid Margin="0,0,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0" VerticalAlignment="Center" Click="CheckBox_Autoplay_Click" Content="Autoplay radio" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}"/>
+                                <ComboBox Grid.Column="1" DisplayMemberPath="Name" IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadio}" ItemsSource="{Binding Source={x:Static prop:Settings.Default}, Path=Radios}" SelectedValue="{Binding Source={x:Static prop:Settings.Default}, Path=AutoplayRadioName}" SelectedValuePath="Name"/>
+                            </Grid>
+                            <CheckBox Margin="0,0,0,2" Content="Autostart after system boot up" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=Autostart}"/>
+                            <CheckBox Margin="0,0,0,2" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}" VerticalContentAlignment="Center">
+                                <CheckBox.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Enable informing about a new updates with check interval of"/>
+                                        <TextBox Width="40" Height="22" HorizontalContentAlignment="Center" IsEnabled="{Binding Source={x:Static prop:Settings.Default}, Path=EnableUpdates}" Style="{StaticResource TextBoxValidationStyle}">
+                                            <TextBox.Text>
+                                                <Binding Path="UpdateCheckInterval" Source="{x:Static prop:Settings.Default}" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:IntRangeValidationRule From="1" To="60"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <Label Content="minute(s)"/>
+                                    </StackPanel>
+                                </CheckBox.Content>
+                            </CheckBox>
+                            <CheckBox Content="Follow default audio sound device (restart needed)" IsChecked="{Binding Source={x:Static prop:Settings.Default}, Path=FollowDefaultDevice}"/>
+                        </StackPanel>
+                    </GroupBox>
 					<GroupBox Grid.Row="1" Padding="5" Header="Audio">
 						<Grid>
 							<Grid.RowDefinitions>

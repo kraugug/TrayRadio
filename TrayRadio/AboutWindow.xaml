@@ -10,7 +10,7 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d">
+        mc:Ignorable="d" LostFocus="Window_LostFocus">
 	<Window.CommandBindings>
 		<CommandBinding CanExecute="CommandShowLicense_CanExecute" Command="local:AboutWindow.CommandShowLicense" Executed="CommandShowLicense_Executed"/>
 	</Window.CommandBindings>
@@ -26,7 +26,7 @@
 		</Grid.RowDefinitions>
 		<Image Grid.Row="0" Width="80" Source="/Resources/Antenna_Signal.png"/>
 		<Label Name="lblNameAndVersion" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="22" FontWeight="SemiBold"/>
-		<Label Grid.Row="2" HorizontalContentAlignment="Center" Content="Tray Radio - Copyright © 2019 Michal Heczko" FontSize="12"/>
+		<Label Grid.Row="2" HorizontalContentAlignment="Center" Content="Tray Radio - Copyright © 2022 Michal Heczko" FontSize="12"/>
 		<Label Grid.Row="3" HorizontalContentAlignment="Center" Content="Michal Heczko  &lt;micky.heczko@gmail.com&gt;" FontSize="12"/>
 		<Label Grid.Row="4" HorizontalContentAlignment="Center"
 		       Content="http://trayradio.kraugug.net" FontSize="12"
