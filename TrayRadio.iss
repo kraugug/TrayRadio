@@ -1,5 +1,5 @@
 ;
-; Copyright(C) 2019 Michal Heczko
+; Copyright(C) 2022 Michal Heczko
 ; All rights reserved.
 ;
 ; This software may be modified and distributed under the terms
@@ -7,7 +7,7 @@
 ;
 #define AppId "{CF837F0A-2961-4BB9-8A07-51A16D9C2D75}"
 #define AppName "Tray Radio"
-#define AppVersion "1.6.0"  
+#define AppVersion "1.7.0"  
 #define AppPublisher "Michal Heczko"
 #define AppURL "http://trayradio.kraugug.net"
 #define AppExeName "TrayRadio.exe"
