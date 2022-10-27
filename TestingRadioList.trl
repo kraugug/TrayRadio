@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfRadioEntry xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <RadioEntry>
+    <Name>All Irish Radio</Name>
+    <Url>http://192.99.62.212:20142/stream</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Impuls Ráááádio</Name>
+    <Url>http://icecast1.play.cz/impuls128.mp3</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Irish Radio Canada</Name>
+    <Url>http://167.114.157.212:8068/stream</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>METAL ONLY - www.metal-only.de - 24h Black Death Heavy</Name>
+    <Url>http://92.222.49.186:9480</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>MetalRock06</Name>
+    <Url>http://listen.radionomy.com/MetalRock06</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>PulseRadio - Trance</Name>
+    <Url>http://178.32.98.117:80/pulstranceHD.mp3</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Radio BEAT</Name>
+    <Url>http://icecast2.play.cz/radiobeat128.mp3</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Jack FM</Name>
+    <Url>http://playerservices.streamtheworld.com/api/livestream-redirect/JACK_FM.mp3</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Times Radio</Name>
+    <Url>https://timesradio.wireless.radio/stream</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>BBC Radio 1</Name>
+    <Url>http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Roxyfm</Name>
+    <Url>http://lodz.radio.pionier.net.pl:8000/pl/roxyfm.ogg</Url>
+  </RadioEntry>
+  <RadioEntry>
+    <Name>Radiotok</Name>
+    <Url>http://olsztyn.radio.pionier.net.pl:8000/z/radiotok.ogg</Url>
+  </RadioEntry>
+</ArrayOfRadioEntry>
